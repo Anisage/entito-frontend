@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { getConfig } from '../Config';
-import { clearAuthToken, getAuthToken } from '../auth/token';
+import { clearAuthToken, resolveAuthToken } from '../auth/token';
 
 const { VITE_API_BASE_URL } = getConfig();
 
@@ -20,13 +20,15 @@ const axiosInstance = axios.create({
 // Registered here, at module load. These used to sit inside an exported
 // setupInterceptors() that nothing ever called, so neither interceptor ran.
 axiosInstance.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  async (config: InternalAxiosRequestConfig) => {
     // Attach the token whenever we hold one. The previous version only did
     // this when window.location.href contained "orders" - so every other
     // authenticated endpoint went out unauthenticated - and it called a
     // getToken() that was never defined anywhere, a ReferenceError waiting
     // for the first request that reached it.
-    const token = getAuthToken();
+    // Awaited, so Firebase refreshes a near-expired token before the
+    // request goes out rather than after it comes back 401.
+    const token = await resolveAuthToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

@@ -12,6 +12,13 @@ import VisualSearch from './pages/VisualSearch';
 import VisualSearchUnavailable from './pages/VisualSearchUnavailable';
 import { getConfig } from './Config';
 
+// Accounts
+import { AuthProvider } from './auth/AuthProvider';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Account from './pages/Account';
+
 // Shop
 import Lookbook from './pages/Lookbook';
 
@@ -46,6 +53,10 @@ function App() {
 
   return (
     <Router>
+      {/* AuthProvider sits inside Router so its children can navigate, and
+          wraps every route so the token provider is registered before any
+          page fires an API call. */}
+      <AuthProvider>
 
       <Routes>
         <Route path="/" element={<MainLayout><Index /></MainLayout>} />
@@ -87,11 +98,24 @@ function App() {
         <Route path='/wholesale' element={<MainLayout><Wholesale /></MainLayout>} />
         <Route path='/gift-cards' element={<MainLayout><GiftCards /></MainLayout>} />
 
+        {/* Accounts */}
+        <Route path='/login' element={<MainLayout><Login /></MainLayout>} />
+        <Route path='/register' element={<MainLayout><Register /></MainLayout>} />
+        <Route
+          path='/account'
+          element={
+            <MainLayout>
+              <ProtectedRoute><Account /></ProtectedRoute>
+            </MainLayout>
+          }
+        />
+
         {/* Legal */}
         <Route path='/privacy' element={<MainLayout><Privacy /></MainLayout>} />
         <Route path='/terms' element={<MainLayout><Terms /></MainLayout>} />
         <Route path='/cookies' element={<MainLayout><Cookies /></MainLayout>} />
       </Routes>
+      </AuthProvider>
 
     </Router>
   )

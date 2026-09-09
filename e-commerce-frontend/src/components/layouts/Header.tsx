@@ -1,4 +1,5 @@
 import { Search, ShoppingBag, Heart, User, ChevronDown, Menu } from 'lucide-react';
+import { useAuth } from '../../auth/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../../redux/store';
@@ -8,6 +9,7 @@ import { cartItemsCount } from '../../redux/slices/cartSlice';
 
 const Header = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
   const wishlistCount = useSelector((state: RootState) => state.wishlist.items.length);
   const params = new URLSearchParams(window.location.search);
@@ -103,7 +105,11 @@ const Header = () => {
             )}
           </button>
 
-          <button className="w-11 h-11 hidden md:flex items-center justify-center rounded-full hover:bg-surface-3 transition-colors" aria-label="Account">
+          <button
+            onClick={() => navigate(user ? '/account' : '/login')}
+            className="w-11 h-11 hidden md:flex items-center justify-center rounded-full hover:bg-surface-3 transition-colors"
+            aria-label={user ? 'Your account' : 'Sign in'}
+          >
             <User size={20} className="text-ink-1" />
           </button>
 
