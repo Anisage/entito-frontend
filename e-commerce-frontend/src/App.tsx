@@ -9,6 +9,8 @@ import Products from './pages/Products';
 import WishlistPage from './pages/WishlistPage';
 import RecentFindsPage from './pages/RecentFindsPage';
 import VisualSearch from './pages/VisualSearch';
+import VisualSearchUnavailable from './pages/VisualSearchUnavailable';
+import { getConfig } from './Config';
 
 // Shop
 import Lookbook from './pages/Lookbook';
@@ -39,6 +41,9 @@ import Terms from './pages/legal/Terms';
 import Cookies from './pages/legal/Cookies';
 
 function App() {
+  // Visual search is gated: its backend endpoint is not deployed yet.
+  const { VITE_ENABLE_VISUAL_SEARCH } = getConfig();
+
   return (
     <Router>
 
@@ -50,7 +55,14 @@ function App() {
         <Route path="/products" element={<MainLayout><Products /></MainLayout>} />
         <Route path="/wishlist" element={<MainLayout><WishlistPage /></MainLayout>} />
         <Route path='/recent-views' element={<MainLayout><RecentFindsPage /></MainLayout>} />
-        <Route path='/visual-search' element={<MainLayout><VisualSearch /></MainLayout>} />
+        <Route
+          path='/visual-search'
+          element={
+            <MainLayout>
+              {VITE_ENABLE_VISUAL_SEARCH ? <VisualSearch /> : <VisualSearchUnavailable />}
+            </MainLayout>
+          }
+        />
 
         {/* Shop */}
         <Route path='/lookbook' element={<MainLayout><Lookbook /></MainLayout>} />
