@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ShoppingBag, Plus, Heart } from 'lucide-react';
+import React from 'react';
+import { Plus } from 'lucide-react';
 import type { Product } from '../types/product';
 import { useNavigate } from 'react-router-dom';
 import WishlistButton from './wishlist/WishlistButton';
@@ -12,119 +12,109 @@ interface ProductDetailCardProps {
 }
 
 const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ product }) => {
-  const [isHovering, setIsHovering] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    dispatch(addItemToCart(
-      {
-        item: product,
-        size: product.sizes ? product.sizes[0] : 'M',
-        color: product.colors ? product.colors[0] : 'Default',
-        quantity: 1,
-        totalDiscount: product.discount ? product.discount : 0,
-        percentageDiscount: product.discount_percentage ? product.discount_percentage : 0,
-        total: parseFloat(product.price)
-      }
-    ))
-  }
-  
+    dispatch(addItemToCart({
+      item: product,
+      size: product.sizes ? product.sizes[0] : 'M',
+      color: product.colors ? product.colors[0] : 'Default',
+      quantity: 1,
+      totalDiscount: product.discount ? product.discount : 0,
+      percentageDiscount: product.discount_percentage ? product.discount_percentage : 0,
+      total: parseFloat(product.price),
+    }));
+  };
+
+  const hasDiscount = product.discount_percentage && product.original_price;
+
   return (
-    <div 
-      className="bg-white rounded-3xl overflow-hidden max-w-sm shadow-md mb-2 h-120 relative cursor-pointer"
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+    <article
+      className="group relative cursor-pointer"
       onClick={() => navigate(`/product/${product.id}`)}
     >
-      {/* Product Image Section */}
-      <div className="relative h-full w-full">
-        <img 
-          src={ product.main_image?.image || '/assets/images/cargo-pants.jpg'}
-          alt="Brown linen shirt" 
-          className="w-full h-full object-cover"
+      {/* Image well */}
+      <div className="relative aspect-[4/5] rounded-card overflow-hidden bg-surface-2">
+        <img
+          src={product.main_image?.image || '/assets/images/cargo-pants.jpg'}
+          alt={product.name}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
 
-        <div className={`absolute top-4 left-4 transition-all duration-300 opacity-100 translate-y-0 cursor-pointer`}>
-            <WishlistButton 
-              item={product}
-              className="bg-white text-gray-900 hover:bg-gray-100 cursor-pointer"
-              size={16}
-            />
+        {/* Top-left tag */}
+        {hasDiscount ? (
+          <span className="absolute top-3 left-3 px-3 py-1.5 rounded-full bg-coral text-white text-[11px] font-medium">
+            -{product.discount_percentage}%
+          </span>
+        ) : (
+          <span className="absolute top-3 left-3 chip bg-white/95 backdrop-blur">
+            New
+          </span>
+        )}
+
+        {/* Wishlist */}
+        <div
+          className="absolute top-3 right-3"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <WishlistButton
+            item={product}
+            className="bg-white/95 backdrop-blur text-ink-1 hover:bg-white shadow-sm w-9 h-9 flex items-center justify-center rounded-full"
+            size={16}
+          />
         </div>
-        
-        {/* Add to Favorites Button */}
-        <button className="absolute top-4 right-4 rounded-full bg-white p-2 cursor-pointer">
+
+        {/* Quick-add (appears on hover) */}
+        <button
+          onClick={handleAddToCart}
+          className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-ink-1 text-white flex items-center justify-center opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all shadow-lg"
+          aria-label="Add to cart"
+        >
           <Plus size={18} />
         </button>
       </div>
 
-      {/* Product Details Section - Shown on Hover */}
-      <div
-        className={`absolute bottom-0 left-0 right-0 bg-white p-5 space-y-5 transform transition-transform duration-300 ease-in-out rounded-t-3xl ${
-            isHovering ? 'translate-y-0' : 'translate-y-full'
-        }`}
-        >
-        {/* Category Tag */}
-        <div className="flex">
-          <span className="px-4 py-2 rounded-full border border-gray-200 text-sm">
-            {product.category_name}
-          </span>
+      {/* Meta */}
+      <div className="pt-4 px-1">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="font-medium text-ink-1 text-[15px] leading-snug line-clamp-1">
+            {product.name}
+          </h3>
+          <div className="flex flex-col items-end shrink-0">
+            <span className="text-ink-1 font-medium text-[15px] whitespace-nowrap">
+              Ksh {product.price}
+            </span>
+            {hasDiscount && (
+              <span className="text-ink-muted text-xs line-through">
+                Ksh {product.original_price}
+              </span>
+            )}
+          </div>
         </div>
+        <p className="text-xs text-ink-muted mt-1 line-clamp-1">
+          {product.brand || product.category_name || 'BR.F Essentials'}
+        </p>
 
-        {/* Product Info */}
-        <div className="space-y-3">
-          {/* Product Thumbnail and Title */}
-          <div className="flex items-start gap-3">
-            <div className="h-16 w-16 rounded-md overflow-hidden flex-shrink-0">
-              <img 
-                src="/api/placeholder/64/64" 
-                alt="Product thumbnail" 
-                className="w-full h-full object-cover" 
+        {/* Color swatches */}
+        {product.colors && product.colors.length > 0 && (
+          <div className="flex items-center gap-1.5 mt-3">
+            {product.colors.slice(0, 4).map((color, i) => (
+              <span
+                key={i}
+                className="w-3.5 h-3.5 rounded-full border border-line"
+                style={{ backgroundColor: color.toLowerCase() }}
+                title={color}
               />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-xl font-medium">{product.name}</h2>
-              <h2 className="text-md font-small">{product.description}</h2>
-            </div>
-            
+            ))}
+            {product.colors.length > 4 && (
+              <span className="text-[11px] text-ink-muted ml-1">+{product.colors.length - 4}</span>
+            )}
           </div>
-
-          {/* Price Information */}
-          <div className="flex items-center gap-2">
-            <span className="font-medium text-lg">Ksh. {product.price}</span>
-            {/* Show this if the image has discount */}
-            {/* <span className="text-gray-500 line-through text-sm">Ksh. 55.99</span> */}
-          </div>
-
-          {/* Product Reference */}
-          <div className="flex items-center gap-3">
-            {/* Color Options */}
-            <div className="flex items-center gap-1">
-              <span className="h-5 w-5 rounded-full bg-blue-400 ring-2 ring-offset-1 ring-blue-400"></span>
-              <span className="h-5 w-5 rounded-full bg-stone-700"></span>
-            </div>
-            
-            {/* Product Reference Code */}
-            <span className="text-sm text-gray-500">REF. 67026730-CHENNAI-LH</span>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-3 pt-2">
-          <button className="bg-black text-white rounded-full py-3 px-6 flex-grow font-medium flex items-center justify-center">
-            Buy now
-          </button>
-          <button 
-            className="rounded-full border border-gray-200 p-3"
-            onClick={handleAddToCart}
-            >
-            <ShoppingBag size={20} />
-          </button>
-        </div>
+        )}
       </div>
-    </div>
+    </article>
   );
 };
 

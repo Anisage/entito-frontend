@@ -8,67 +8,59 @@ interface CartItemProps {
   removeItem: (id: number) => void;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ 
-  item, 
-  updateQuantity, 
-  removeItem 
-}) => {
-    return (
-        <div className="flex items-center border-b-1 border-gray-200 pb-4">
-          
-          
-          {/* Product image */}
-          <div className="w-16 h-16 mr-4">
-            <img 
-              src={item.item.main_image?.image || '/assets/images/cargo-pants.jpg'} 
-              alt={item.item.name} 
-              className="w-full h-full object-contain"
-            />
-          </div>
-          
-          {/* Product info */}
-          <div className="flex-grow">
-            <div className='flex justify-between items-center'>
-                <h3 className="font-medium">{item.item.name}</h3>                
-            </div>
-            
-            <div className="text-sm text-gray-500">
-              <p>Size: {item.size}</p>
-              <p>Color: {item.color}</p>
-            </div>
-            <p className="font-medium mt-1">${item.item.price}</p>
-          </div>
+const CartItem: React.FC<CartItemProps> = ({ item, updateQuantity, removeItem }) => {
+  return (
+    <article className="bg-surface border border-line-soft rounded-card p-4 flex gap-4">
+      {/* Image */}
+      <div className="w-24 h-28 rounded-xl overflow-hidden bg-surface-2 shrink-0">
+        <img
+          src={item.item.main_image?.image || '/assets/images/cargo-pants.jpg'}
+          alt={item.item.name}
+          className="w-full h-full object-cover"
+        />
+      </div>
 
-            <div className='flex flex-col items-end h-full'>
-                <button 
-                  className="ml-4 text-red-500 top-2 flex justify-end"
-                  onClick={() => removeItem(item.item.id)}
-                  >
-                  <Trash2 size={16} />
-                </button>
-                <div></div>
-                {/* Quantity controls */}
-                <div className="flex items-center rounded-2xl px-1 bg-gray-100">
-                <button 
-                  onClick={() => updateQuantity(item.item.id, item.quantity - 1)}
-                  className="w-8 h-8 flex items-center justify-center"
-                  >
-                  <Minus size={16} />
-                </button>
-                <div className="w-8 h-8 flex items-center justify-center">
-                  {item.quantity}
-                </div>
-                <button 
-                  onClick={() => updateQuantity(item.item.id, item.quantity + 1)}
-                  className="w-8 h-8 flex items-center justify-center"
-                >
-                  <Plus size={16} />
-                </button>
-                </div>
-            </div>          
-          
+      {/* Body */}
+      <div className="flex-1 min-w-0 flex flex-col">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h3 className="font-medium text-ink-1 leading-snug line-clamp-1">
+              {item.item.name}
+            </h3>
+            <p className="text-xs text-ink-muted mt-1">
+              {item.item.brand || 'BR.F'} · Size {item.size} · {item.color}
+            </p>
+          </div>
+          <button
+            onClick={() => removeItem(item.item.id)}
+            className="w-9 h-9 rounded-full bg-surface-3 hover:bg-coral-soft hover:text-coral text-ink-muted flex items-center justify-center transition-colors shrink-0"
+            aria-label="Remove"
+          >
+            <Trash2 size={14} />
+          </button>
         </div>
-      );
-}
+
+        <div className="flex items-end justify-between gap-3 mt-auto pt-3">
+          <span className="font-medium text-ink-1">Ksh {item.item.price}</span>
+          <div className="flex items-center bg-surface-3 rounded-full p-1">
+            <button
+              onClick={() => updateQuantity(item.item.id, item.quantity - 1)}
+              className="w-8 h-8 rounded-full hover:bg-white flex items-center justify-center transition-colors"
+            >
+              <Minus size={14} />
+            </button>
+            <span className="w-8 text-center text-sm font-medium">{item.quantity}</span>
+            <button
+              onClick={() => updateQuantity(item.item.id, item.quantity + 1)}
+              className="w-8 h-8 rounded-full hover:bg-white flex items-center justify-center transition-colors"
+            >
+              <Plus size={14} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+};
 
 export default CartItem;

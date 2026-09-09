@@ -1,224 +1,212 @@
-import React, { useState } from 'react'
-import RecentFinds, { RecentFindsCard } from '../components/product/RecentFinds';
+import React, { useState } from 'react';
+import { RecentFindsCard } from '../components/product/RecentFinds';
 import { useDispatch, useSelector } from 'react-redux';
-import { clearRecentViews, selectFetchError, selectLoading, selectRecentProducts, selectRecentsInStock, selectRecentsOutOfStock } from '../redux/slices/recentViewsSlice';
-import { Eye, Filter, Grid3X3, List, ShoppingBag, Trash2 } from 'lucide-react';
+import {
+  clearRecentViews,
+  selectFetchError,
+  selectLoading,
+  selectRecentProducts,
+  selectRecentsInStock,
+  selectRecentsOutOfStock,
+} from '../redux/slices/recentViewsSlice';
+import {
+  Eye,
+  Filter,
+  Grid3X3,
+  List,
+  ShoppingBag,
+  Trash2,
+  ChevronDown,
+} from 'lucide-react';
 import RecentFindsEmptyState from '../components/product/RecentFindsEmptyState';
 
 const RecentFindsPage = () => {
-    const dispatch = useDispatch();
-    const isLoading = useSelector(selectLoading);
-    const error = useSelector(selectFetchError);
-    const recentFindsData = useSelector(selectRecentProducts);
-    const inStockItems = useSelector(selectRecentsInStock);
-    const outOfStock = useSelector(selectRecentsOutOfStock);
-    const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-    const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'price-low' | 'price-high' | 'name'>('newest');
-    const [filterBy, setFilterBy] = useState<'all' | 'in-stock' | 'on-sale'>('all');
+  const dispatch = useDispatch();
+  const isLoading = useSelector(selectLoading);
+  const error = useSelector(selectFetchError);
+  const recentFindsData = useSelector(selectRecentProducts);
+  const inStockItems = useSelector(selectRecentsInStock);
+  const outOfStock = useSelector(selectRecentsOutOfStock);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'price-low' | 'price-high' | 'name'>('newest');
+  const [filterBy, setFilterBy] = useState<'all' | 'in-stock' | 'on-sale'>('all');
 
-    const handleClearAll = () => {
-        if (window.confirm('Are you sure you want to remove all items from your wishlist?')) {
-            dispatch(clearRecentViews());
-        }
-    };
-
-    const handleAddAllToCart = () => {
-        if (inStockItems.length === 0) {
-            alert('No items in stock to add to cart');
-            return;
-        }
-        
-        // This would typically dispatch actions to add each item to cart
-        console.log('Adding all in-stock items to cart:', inStockItems);
-        alert(`Added ${inStockItems.length} items to cart!`);
-    };
-
-    // Filter and sort items
-    const filteredAndSortedItems = React.useMemo(() => {
-        let filtered = [...recentFindsData];
-
-        // Apply filters
-        switch (filterBy) {
-            case 'in-stock':
-                filtered = inStockItems;
-                break;
-            case 'on-sale':
-                filtered = outOfStock;
-                break;
-            default:
-                break;
-        }
-
-        // Apply sorting
-        filtered.sort((a, b) => {
-            switch (sortBy) {
-                // case 'newest':
-                //     return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
-                // case 'oldest':
-                //     return new Date(a.dateAdded).getTime() - new Date(b.dateAdded).getTime();
-                case 'price-low':
-                    return (Number(a.price) || 0) - (Number(b.price) || 0);
-                case 'price-high':
-                    return (Number(b.price) || 0) - (Number(a.price) || 0);
-                case 'name':
-                    return a.name.localeCompare(b.name);
-                default:
-                    return 0;
-            }
-        });
-
-        return filtered;
-    }, [recentFindsData, filterBy, sortBy, inStockItems, outOfStock]);
-
-    if (isLoading) {
-        return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="flex items-center justify-center h-64">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black"></div>
-                </div>
-            </div>
-        );
+  const handleClearAll = () => {
+    if (window.confirm('Clear all recently viewed items?')) {
+      dispatch(clearRecentViews());
     }
+  };
 
-    if (error) {
-        return (
-            <div className="container mx-auto px-4 py-8">
-                <div className="text-center text-red-600 bg-red-50 p-4 rounded-lg">
-                    Error: {error}
-                </div>
-            </div>
-        );
+  const handleAddAllToCart = () => {
+    if (inStockItems.length === 0) {
+      alert('No items in stock to add to cart');
+      return;
     }
+    alert(`Added ${inStockItems.length} items to cart!`);
+  };
 
+  const filteredAndSortedItems = React.useMemo(() => {
+    let filtered = [...recentFindsData];
+    switch (filterBy) {
+      case 'in-stock':
+        filtered = inStockItems;
+        break;
+      case 'on-sale':
+        filtered = outOfStock;
+        break;
+      default:
+        break;
+    }
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'price-low':
+          return (Number(a.price) || 0) - (Number(b.price) || 0);
+        case 'price-high':
+          return (Number(b.price) || 0) - (Number(a.price) || 0);
+        case 'name':
+          return a.name.localeCompare(b.name);
+        default:
+          return 0;
+      }
+    });
+    return filtered;
+  }, [recentFindsData, filterBy, sortBy, inStockItems, outOfStock]);
+
+  if (isLoading) {
     return (
-        <div className="container mx-auto px-4 py-8">
-            
-            {/* Header */}
-            <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-3">
-                    <Eye size={28} className="text-red-500" />
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900">Recently viewed</h1>
-                        <p className="text-gray-600">
-                            {recentFindsData.length} {recentFindsData.length === 1 ? 'item' : 'items'} viewed
-                        </p>
-                    </div>
+      <div className="max-w-7xl mx-auto px-4 py-32 text-center text-ink-muted">
+        Loading…
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20">
+        <div className="bg-coral-soft text-coral rounded-card-lg p-6 text-center">
+          {error}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-page">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6">
+        <div className="bg-surface-2 rounded-card-lg p-8 md:p-12 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
+          <div>
+            <span className="chip mb-4">
+              <Eye size={12} /> Recently viewed
+            </span>
+            <h1 className="font-display text-5xl md:text-6xl text-ink-1 leading-tight mt-3">
+              Pick up where<br /> you left off
+            </h1>
+            <p className="text-ink-muted mt-3">
+              {recentFindsData.length} {recentFindsData.length === 1 ? 'item' : 'items'} you've browsed
+            </p>
+          </div>
+          {recentFindsData.length > 0 && (
+            <div className="flex items-center gap-2">
+              <button onClick={handleAddAllToCart} className="btn-pill btn-primary">
+                <ShoppingBag size={14} />
+                Add all to bag
+              </button>
+              <button
+                onClick={handleClearAll}
+                className="btn-pill bg-surface text-ink-1 border border-line hover:bg-coral-soft hover:text-coral hover:border-coral-soft transition-colors"
+              >
+                <Trash2 size={14} />
+                Clear all
+              </button>
+            </div>
+          )}
+        </div>
+      </section>
+
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        {recentFindsData.length === 0 ? (
+          <RecentFindsEmptyState />
+        ) : (
+          <>
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-8">
+              <div className="flex items-center gap-3">
+                <div className="hidden md:flex items-center gap-1 bg-surface border border-line rounded-full p-1">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                      viewMode === 'grid' ? 'bg-ink-1 text-white' : 'text-ink-muted hover:text-ink-1'
+                    }`}
+                  >
+                    <Grid3X3 size={14} />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+                      viewMode === 'list' ? 'bg-ink-1 text-white' : 'text-ink-muted hover:text-ink-1'
+                    }`}
+                  >
+                    <List size={14} />
+                  </button>
                 </div>
-                
-                {recentFindsData.length > 0 && (
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={handleAddAllToCart}
-                            className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors duration-200"
-                        >
-                            <ShoppingBag size={16} />
-                            Add All to Cart
-                        </button>
-                        <button
-                            onClick={handleClearAll}
-                            className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200"
-                        >
-                            <Trash2 size={16} />
-                            Clear All
-                        </button>
-                    </div>
-                )}
+                <p className="text-sm text-ink-muted">
+                  Showing <span className="text-ink-1 font-medium">{filteredAndSortedItems.length}</span> of {recentFindsData.length}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-muted pointer-events-none" />
+                  <select
+                    value={filterBy}
+                    onChange={(e) => setFilterBy(e.target.value as any)}
+                    className="appearance-none bg-surface border border-line rounded-full pl-9 pr-9 py-2 text-xs text-ink-1 focus:outline-none focus:border-ink-1 cursor-pointer"
+                  >
+                    <option value="all">All items</option>
+                    <option value="in-stock">In stock</option>
+                    <option value="on-sale">On sale</option>
+                  </select>
+                  <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted pointer-events-none" />
+                </div>
+
+                <div className="relative">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as any)}
+                    className="appearance-none bg-surface border border-line rounded-full pl-4 pr-9 py-2 text-xs text-ink-1 focus:outline-none focus:border-ink-1 cursor-pointer"
+                  >
+                    <option value="newest">Newest</option>
+                    <option value="oldest">Oldest</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                    <option value="name">Name (A–Z)</option>
+                  </select>
+                  <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-muted pointer-events-none" />
+                </div>
+              </div>
             </div>
 
-            {recentFindsData.length === 0 ? (
-                <RecentFindsEmptyState />
+            {filteredAndSortedItems.length === 0 ? (
+              <div className="bg-surface border border-line-soft rounded-card-lg py-16 text-center text-ink-muted">
+                Nothing matches your current filters.
+              </div>
             ) : (
-                <>
-                    {/* Controls */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 mb-8 p-4 bg-gray-50 rounded-lg">
-                        {/* View Mode */}
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-600">View:</span>
-                            <div className="flex bg-white rounded-lg p-1">
-                                <button
-                                    onClick={() => setViewMode('grid')}
-                                    className={`p-2 rounded-md transition-colors duration-200 ${
-                                        viewMode === 'grid' 
-                                            ? 'bg-black text-white' 
-                                            : 'text-gray-600 hover:bg-gray-100'
-                                    }`}
-                                >
-                                    <Grid3X3 size={16} />
-                                </button>
-                                <button
-                                    onClick={() => setViewMode('list')}
-                                    className={`p-2 rounded-md transition-colors duration-200 ${
-                                        viewMode === 'list' 
-                                            ? 'bg-black text-white' 
-                                            : 'text-gray-600 hover:bg-gray-100'
-                                    }`}
-                                >
-                                    <List size={16} />
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Sort and Filter */}
-                        <div className="flex items-center gap-4">
-                            {/* Filter */}
-                            <div className="flex items-center gap-2">
-                                <Filter size={16} className="text-gray-600" />
-                                <select
-                                    value={filterBy}
-                                    onChange={(e) => setFilterBy(e.target.value as any)}
-                                    className="bg-white border border-gray-200 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                                >
-                                    <option value="all">All Items</option>
-                                    <option value="in-stock">In Stock</option>
-                                    <option value="on-sale">On Sale</option>
-                                </select>
-                            </div>
-
-                            {/* Sort */}
-                            <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-600">Sort by:</span>
-                                <select
-                                    value={sortBy}
-                                    onChange={(e) => setSortBy(e.target.value as any)}
-                                    className="bg-white border border-gray-200 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-black"
-                                >
-                                    <option value="newest">Newest</option>
-                                    <option value="oldest">Oldest</option>
-                                    <option value="price-low">Price: Low to High</option>
-                                    <option value="price-high">Price: High to Low</option>
-                                    <option value="name">Name</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Results Count */}
-                    <div className="mb-6">
-                        <p className="text-gray-600">
-                            Showing {filteredAndSortedItems.length} of {recentFindsData.length} items
-                        </p>
-                    </div>
-
-                    {/* Products Grid/List */}
-                    {filteredAndSortedItems.length === 0 ? (
-                        <div className="text-center py-12">
-                            <p className="text-gray-500">No items match your current filters.</p>
-                        </div>
-                    ) : (
-                        <div className={`${
-                            viewMode === 'grid' 
-                                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-                                : 'space-y-4'
-                        }`}>
-                            {filteredAndSortedItems.map((item) => (
-                                <RecentFindsCard key={item.id} product={item} />
-                            ))}
-                        </div>
-                    )}
-                </>
+              <div
+                className={`grid gap-4 md:gap-6 ${
+                  viewMode === 'grid'
+                    ? 'grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+                    : 'grid-cols-1'
+                }`}
+              >
+                {filteredAndSortedItems.map((item) => (
+                  <RecentFindsCard key={item.id} product={item} />
+                ))}
+              </div>
             )}
-        </div>
-    );
-}
+          </>
+        )}
+      </section>
+    </div>
+  );
+};
 
-export default RecentFindsPage
+export default RecentFindsPage;

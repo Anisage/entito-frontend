@@ -1,1 +1,158 @@
 @import "tailwindcss";
+
+/* =========================================================================
+   Paperpillar-inspired design tokens
+   ========================================================================= */
+@theme {
+  /* Brand & neutral palette */
+  --color-ink-1: #0f1419;          /* Black 1 — primary text, primary buttons */
+  --color-ink-2: #1f242e;          /* Black 2 — secondary surfaces (dark cards) */
+  --color-ink-muted: #6e7079;      /* Grey — secondary text */
+  --color-ink-soft: #9ea1a8;       /* Soft grey — tertiary text */
+  --color-line: #e6e4dd;           /* Hairline borders */
+  --color-line-soft: #efece5;      /* Soft borders */
+
+  --color-page: #f6f5f1;           /* Page background — warm off-white */
+  --color-surface: #ffffff;        /* Cards */
+  --color-surface-2: #ecebe4;      /* Beige surface for category tiles */
+  --color-surface-3: #f1efea;      /* Slightly darker page chip */
+
+  --color-accent: #4a5b82;         /* Slate-blue */
+  --color-coral: #f47171;          /* Soft red / coral accent */
+  --color-coral-soft: #ffd2cd;     /* Coral tint */
+  --color-mint: #c7d8c1;           /* Calm green tint */
+  --color-sand: #e7dcc5;           /* Warm sand accent */
+  --color-sun: #f5d36e;            /* Warm yellow */
+
+  /* Type scale (matches Figma Display / Heading / Body / Single text) */
+  --font-display: "DM Serif Display", "Inter", serif;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --text-display-1: 60px;
+  --text-display-2: 48px;
+  --text-display-3: 36px;
+  --text-display-4: 28px;
+
+  /* Radii */
+  --radius-pill: 9999px;
+  --radius-card: 1.25rem;     /* 20px */
+  --radius-card-lg: 1.75rem;  /* 28px */
+
+  /* Shadows */
+  --shadow-card: 0 1px 2px rgba(15, 20, 25, 0.04), 0 8px 24px rgba(15, 20, 25, 0.04);
+}
+
+/* =========================================================================
+   Base resets
+   ========================================================================= */
+html,
+body {
+  background-color: var(--color-page);
+  color: var(--color-ink-1);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  letter-spacing: -0.01em;
+}
+
+/* Display headings get the serif treatment */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  font-weight: 400;
+}
+
+/* Reusable primitives ----------------------------------------------------- */
+
+/* Pill button */
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-pill);
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1;
+  transition: background-color 200ms ease, color 200ms ease,
+    border-color 200ms ease, transform 150ms ease;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.btn-pill:active {
+  transform: translateY(1px);
+}
+.btn-primary {
+  background-color: var(--color-ink-1);
+  color: white;
+}
+.btn-primary:hover {
+  background-color: var(--color-ink-2);
+}
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-ink-1);
+  border: 1px solid var(--color-line);
+}
+.btn-ghost:hover {
+  background-color: var(--color-surface);
+  border-color: var(--color-ink-1);
+}
+.btn-light {
+  background-color: white;
+  color: var(--color-ink-1);
+}
+.btn-light:hover {
+  background-color: var(--color-surface-3);
+}
+
+/* Chip / tag */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  color: var(--color-ink-muted);
+  border: 1px solid var(--color-line);
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.chip-dark {
+  background-color: var(--color-ink-1);
+  color: white;
+  border-color: var(--color-ink-1);
+}
+
+/* Card surface */
+.card-surface {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line-soft);
+}
+
+/* Soft page surface */
+.surface-soft {
+  background-color: var(--color-surface-3);
+  border-radius: var(--radius-card);
+}
+
+/* Scrollbar styling */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
+
+/* Hide arrows on number inputs (used in filters) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

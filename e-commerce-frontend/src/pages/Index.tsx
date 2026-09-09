@@ -1,5 +1,8 @@
-import { useEffect, useState } from "react";
-import { Search, Menu, Info, ShoppingBag, ChevronDown, ChevronLeft, ChevronRight, Plus, ArrowUpRight, Heart, User } from 'lucide-react';
+import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
 import ProductDetailCard from "../components/ProductDetailCard";
 import StayInTouch from "../components/StayInTouch";
 import FreshArrivals from "../components/index/FreshArrivals";
@@ -8,170 +11,292 @@ import FAQS from "../components/index/FAQS";
 import BrandStory from "../components/index/BrandStory";
 import Testimonials from "../components/index/Testimonials";
 import Categories from "../components/index/Categories";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import UploadDropzone from "../components/search/UploadDropzone";
 import type { AppDispatch } from "../redux/store";
-import { fetchProducts, selectProducts, selectTotalProducts } from "../redux/slices/productsSlice";
+import { fetchProducts, selectProducts } from "../redux/slices/productsSlice";
+import { setSearchError } from "../redux/slices/searchSlice";
+
+// Sample inspiration photos that users can click to pre-fill the visual
+// search. URLs are deterministic picsum images keyed by slug so they're
+// stable across sessions; Allan can swap them for real wig / hairstyle
+// reference shots later (the contract for this list is the only thing
+// that needs to stay stable — anywhere a real hairstyle image is added,
+// it just replaces the `url`).
+interface SampleLook {
+  id: string;
+  label: string;
+  url: string;
+}
+
+const SAMPLE_LOOKS: SampleLook[] = [
+  {
+    id: "braided-bob",
+    label: "Braided bob",
+    url: "https://picsum.photos/seed/braided-bob/600/750",
+  },
+  {
+    id: "long-curls",
+    label: "Long curls",
+    url: "https://picsum.photos/seed/long-curls/600/750",
+  },
+  {
+    id: "kinky-twist",
+    label: "Kinky twist",
+    url: "https://picsum.photos/seed/kinky-twist/600/750",
+  },
+  {
+    id: "sleek-straight",
+    label: "Sleek straight",
+    url: "https://picsum.photos/seed/sleek-straight/600/750",
+  },
+  {
+    id: "lace-frontal",
+    label: "Lace frontal",
+    url: "https://picsum.photos/seed/lace-frontal/600/750",
+  },
+  {
+    id: "ponytail",
+    label: "High ponytail",
+    url: "https://picsum.photos/seed/ponytail/600/750",
+  },
+];
 
 const Index = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const products = useSelector(selectProducts);
+  const navigate = useNavigate();
 
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const dispatch =  useDispatch<AppDispatch>();
-    const products = useSelector(selectProducts);
-    const totalProducts = useSelector(selectTotalProducts);
+  const [presetFile, setPresetFile] = useState<File | null>(null);
+  const [loadingSampleId, setLoadingSampleId] = useState<string | null>(null);
+  const sampleScrollerRef = useRef<HTMLDivElement | null>(null);
 
-    useEffect(() => {
-        console.log('Triggering products fetch');
-        dispatch(fetchProducts() as any);
-    }, []);
+  useEffect(() => {
+    dispatch(fetchProducts({}) as any);
+  }, [dispatch]);
 
-    const navigate = useNavigate();
-  
-    const nextSlide = () => {
-        setCurrentSlide((prev) => (prev + 1) % 3);
-    };
-    
-    const prevSlide = () => {
-        setCurrentSlide((prev) => (prev - 1 + 3) % 3);
-    };
+  /**
+   * Turn a sample-photo URL into a File suitable for the dropzone. We
+   * fetch the blob client-side rather than streaming the URL through to
+   * the backend so the search payload is identical whether the user
+   * uploaded their own photo or picked from the carousel.
+   */
+  const handleSampleClick = async (sample: SampleLook) => {
+    if (loadingSampleId) return;
+    setLoadingSampleId(sample.id);
+    try {
+      const res = await fetch(sample.url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      // Default to image/jpeg if the server didn't return a Content-Type
+      // that lands in our accepted set — picsum returns jpeg.
+      const type = blob.type || "image/jpeg";
+      const file = new File([blob], `${sample.id}.jpg`, { type });
+      setPresetFile(file);
+    } catch (err) {
+      dispatch(
+        setSearchError(
+          "Couldn't load that sample. Try another or upload your own photo."
+        )
+      );
+    } finally {
+      setLoadingSampleId(null);
+    }
+  };
 
-    return (
-        <>  
-      
-        {/* Hero Slider */}
-        <div className="relative overflow-hidden bg-stone-200 h-160 rounded-2xl">
-          <div 
-            className="flex transition-transform duration-500 h-full"
-            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-          >
-            {/* Slide 1 */}
-            <div className="min-w-full h-full relative flex items-center">
-              <div className="absolute inset-0 z-0">
-                <div className="w-full h-full bg-stone-200 rounded-full relative overflow-hidden">
-                  <div className="absolute right-0 w-2/3 h-full rounded-l-full bg-blue-100">
-                    {/* Background image would be placed here */}
-                  </div>
-                </div>
+  const scrollSamples = (direction: "left" | "right") => {
+    const el = sampleScrollerRef.current;
+    if (!el) return;
+    const amount = el.clientWidth * 0.8;
+    el.scrollBy({
+      left: direction === "left" ? -amount : amount,
+      behavior: "smooth",
+    });
+  };
+
+  const handleSearchDispatched = () => {
+    // The thunk was just dispatched from the dropzone. Hop to the
+    // dedicated results page where pending → fulfilled/rejected will
+    // play out. `clearOnUnmount={false}` on the dropzone keeps the
+    // slice state alive for the next route.
+    navigate("/visual-search");
+  };
+
+  return (
+    <div className="bg-page">
+      {/* HERO ============================================================ */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="relative overflow-hidden rounded-card-lg bg-coral-soft">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 p-8 md:p-12 lg:p-14 min-h-[520px] md:min-h-[600px]">
+            {/* Pitch */}
+            <div className="lg:col-span-6 flex flex-col justify-between relative z-10">
+              <div>
+                <span className="chip bg-white/90 text-ink-1 border-transparent">
+                  <Sparkles size={12} /> AI hair try-on
+                </span>
+                <h1 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] leading-[0.95] mt-6 text-ink-1">
+                  <span className="block">Snap it.</span>
+                  <span className="block">Find it.</span>
+                  <span className="block">Try it on.</span>
+                </h1>
+                <p className="text-ink-muted leading-relaxed max-w-md mt-6">
+                  Upload any hairstyle photo and we'll match you with the
+                  closest wigs and extensions in stock — then preview them on
+                  your selfie before you check out.
+                </p>
               </div>
-              
-              <div className="container mx-auto px-8 z-10">
-                <div className="max-w-md">
-                  <h1 className="text-5xl font-light text-white leading-tight mb-4">
-                    We are<br />digital<br />meets fashions
-                  </h1>
-                  <p className="text-white text-sm mb-6">
-                    Show your store shine, get high-quality<br />swag directly from the vstore foundation.
-                  </p>
-                  
-                  <div className='flex align-center left-1/2 transform -translate-x-1/2 absolute mb-0 z-30 bottom-20'>
-                    
-                    <button 
-                      className="bg-white text-black px-6 py-3 
-                      rounded-full flex align-center mb-0"
-                      onClick={() => navigate('/products')}
-                    >
-                      <span className="font-medium">Start shopping</span>
-                    </button>
 
-                    <div className="bg-white text-black rounded-full flex align-center justify-center p-3">
-                      <ArrowUpRight size={26}/>
-                    </div>
-                  </div>
-
-                  <button className="text-white text-lg left-1/2 transform -translate-x-1/2 absolute bottom-8">
-                    Top collections
-                  </button>
-                </div>
-              </div>
-              
-              <div className="absolute bottom-4 right-4 text-white text-xs">
-                <p>Transforming into stylish,</p>
-                <p>functional pieces</p>
+              <div className="flex items-center gap-3 mt-8">
+                <button
+                  onClick={() => navigate("/visual-search")}
+                  className="btn-pill btn-light"
+                >
+                  Browse looks
+                  <ArrowUpRight size={14} />
+                </button>
+                <button
+                  onClick={() => navigate("/products")}
+                  className="btn-pill btn-ghost"
+                >
+                  All products
+                </button>
               </div>
             </div>
-            
-            {/* Slide 2 */}
-            <div className="min-w-full h-full bg-stone-300">
-              {/* Content for second slide */}
-            </div>
-            
-            {/* Slide 3 */}
-            <div className="min-w-full h-full bg-stone-300">
-              {/* Content for third slide */}
+
+            {/* Upload zone */}
+            <div className="lg:col-span-6 relative">
+              <div className="bg-white/95 backdrop-blur rounded-card-lg p-5 md:p-6 shadow-card">
+                <p className="text-xs text-ink-muted uppercase tracking-wide mb-3">
+                  Start your search
+                </p>
+                <UploadDropzone
+                  variant="hero"
+                  presetFile={presetFile}
+                  clearOnUnmount={false}
+                  onSubmitted={handleSearchDispatched}
+                />
+              </div>
             </div>
           </div>
-          
-          {/* Slide controls */}
-          <div className="absolute top-8 right-4 transform flex space-x-2">
-            <button 
-              onClick={prevSlide}
-              className="w-8 h-8 bg-white bg-opacity-70 rounded-full flex items-center justify-center"
+        </div>
+      </section>
+
+      {/* SAMPLE LOOKS ==================================================== */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+        <header className="flex items-end justify-between gap-3 mb-6">
+          <div>
+            <span className="chip mb-3">Sample looks</span>
+            <h2 className="font-display text-3xl md:text-4xl text-ink-1 mt-2 leading-tight">
+              Need inspiration? Tap a look.
+            </h2>
+            <p className="text-ink-muted mt-2 text-sm max-w-md">
+              We'll preload the photo into the search above — hit "Find matches"
+              to see what's in stock.
+            </p>
+          </div>
+          <div className="hidden md:flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => scrollSamples("left")}
+              aria-label="Scroll samples left"
+              className="w-10 h-10 rounded-full bg-surface-2 hover:bg-ink-1/10 text-ink-1 flex items-center justify-center transition-colors"
             >
               <ChevronLeft size={16} />
             </button>
-            <button 
-              onClick={nextSlide}
-              className="w-8 h-8 bg-white bg-opacity-70 rounded-full flex items-center justify-center"
+            <button
+              type="button"
+              onClick={() => scrollSamples("right")}
+              aria-label="Scroll samples right"
+              className="w-10 h-10 rounded-full bg-surface-2 hover:bg-ink-1/10 text-ink-1 flex items-center justify-center transition-colors"
             >
               <ChevronRight size={16} />
             </button>
           </div>
+        </header>
+
+        <div
+          ref={sampleScrollerRef}
+          className="flex gap-4 md:gap-5 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory"
+        >
+          {SAMPLE_LOOKS.map((sample) => {
+            const isLoading = loadingSampleId === sample.id;
+            return (
+              <button
+                key={sample.id}
+                type="button"
+                onClick={() => handleSampleClick(sample)}
+                disabled={isLoading}
+                className="group relative shrink-0 w-40 md:w-48 snap-start text-left"
+              >
+                <div className="aspect-[4/5] rounded-card overflow-hidden bg-surface-2 relative">
+                  <img
+                    src={sample.url}
+                    alt={sample.label}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  {isLoading && (
+                    <div className="absolute inset-0 bg-ink-1/30 flex items-center justify-center text-white text-xs">
+                      Loading…
+                    </div>
+                  )}
+                </div>
+                <p className="text-sm font-medium text-ink-1 mt-3">
+                  {sample.label}
+                </p>
+                <p className="text-xs text-ink-muted">Try this look</p>
+              </button>
+            );
+          })}
         </div>
+      </section>
 
-        <Promotions />
-      
-        {/* Second Section - Catalogs - Updated to match the image */}
-        <FreshArrivals />
+      {/* PROMOTIONS ====================================================== */}
+      <Promotions />
 
+      {/* FRESH ARRIVALS ================================================== */}
+      <FreshArrivals />
 
-        <div className="my-8">
-          <div className="container mx-auto px-4 mb-20">
-            <div className="flex items-center justify-between mt-4 mb-2">
-              <span className="text-sm font-medium py-2 px-2 rounded-full text-gray-400 bg-gray-100">Product Catalog</span>
-              
-              <div className="flex items-center space-x-2">
-                <button className="w-8 h-8 bg-gray-100 bg-opacity-70 rounded-full flex items-center justify-center">
-                  <ChevronLeft size={16} className="text-gray-400" />
-                </button>
-                <button className="w-8 h-8 bg-gray-100 bg-opacity-70 rounded-full flex items-center justify-center">
-                  <ChevronRight size={16} />
-                </button>
-                <a href="/products" className="text-xs ml-2">View all</a>
-              </div>
-            </div>
-            <h4 className='flex mx-auto justify-center items-center text-5xl max-w-1/3 my-10 text-black'>
-              Products and catalog
-            </h4> 
-            
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 overflow-x-auto">
-              {
-                products.map(product => (
-                  <ProductDetailCard key={product.id} product={product} />
-                ))
-              }
-              
-              
-            </div>
+      {/* PRODUCT CATALOG ================================================= */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-20">
+        <header className="flex items-end justify-between mb-10">
+          <div>
+            <span className="chip mb-4">Product catalog</span>
+            <h2 className="font-display text-4xl md:text-5xl text-ink-1 mt-3 leading-tight max-w-xl">
+              The full collection, ready to shop
+            </h2>
           </div>
+          <button
+            onClick={() => navigate("/products")}
+            className="hidden md:inline-flex btn-pill btn-ghost"
+          >
+            View all
+            <ArrowUpRight size={14} />
+          </button>
+        </header>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          {products.slice(0, 8).map((product) => (
+            <ProductDetailCard key={product.id} product={product} />
+          ))}
         </div>
+      </section>
 
-        {/* Categories Section */}
-        <Categories />
+      {/* CATEGORIES ====================================================== */}
+      <Categories />
 
-        {/* Testimonials Section */}
-        <Testimonials />
+      {/* TESTIMONIALS ==================================================== */}
+      <Testimonials />
 
-         {/* Brand Story Section */}
-        <BrandStory />
+      {/* BRAND STORY ===================================================== */}
+      <BrandStory />
 
-        <FAQS />
+      {/* FAQ ============================================================= */}
+      <FAQS />
 
-        {/* Stay in touch section */}
-
-        <StayInTouch />
-        </>
-    
-    )
-}
+      {/* NEWSLETTER ====================================================== */}
+      <StayInTouch />
+    </div>
+  );
+};
 
 export default Index;
