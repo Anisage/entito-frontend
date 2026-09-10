@@ -105,7 +105,7 @@ const Footer = () => {
 
         {/* Bottom row */}
         <div className="border-t border-white/10 mt-16 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-xs text-white/50">
-          <span>© {new Date().getFullYear()} BR.F — Made in Nairobi.</span>
+          <span>© {new Date().getFullYear()} Entito Designs — Made in Nairobi.</span>
           <div className="flex items-center gap-6">
             <Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>

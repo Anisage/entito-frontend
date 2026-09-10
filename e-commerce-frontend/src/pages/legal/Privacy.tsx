@@ -4,13 +4,13 @@ const Privacy = () => (
   <LegalLayout
     breadcrumb="Privacy"
     title="Privacy policy"
-    subtitle="How we collect, use, and protect your information when you use BR.F. Written in plain English — and compliant with Kenya's Data Protection Act, 2019."
+    subtitle="How we collect, use, and protect your information when you use Entito. Written in plain English — and compliant with Kenya's Data Protection Act, 2019."
     lastUpdated="May 2026"
     sections={[
       {
         heading: "Who we are",
         body: [
-          "BR.F is operated by BR.F Limited, a company registered in Kenya (registration number TBA). Our registered office is at The Mall, Westlands, Nairobi.",
+          "Entito Designs is operated by [REGISTERED COMPANY NAME], a company registered in Kenya (registration number [REGISTRATION NUMBER]). Our registered office is at [REGISTERED OFFICE ADDRESS].",
           "For the purposes of the Data Protection Act, 2019, we are the data controller of personal information you provide to us.",
         ],
       },

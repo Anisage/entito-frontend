@@ -18,7 +18,7 @@ export const fetchProducts = createAsyncThunk(
         page?: number; pageSize?: number; limit?: number; 
         category?: string; search?: string; minPrice?: number; 
         maxPrice?: number; sizeFilter?: string; colorFilter?: string; 
-        ratingsFilter?: number; categoryFilter?: string; brandFilter?: string;
+        ratingsFilter?: number; categoryFilter?: string;
     } = {}, { rejectWithValue }) => {
         try {
             console.log('Fetching products');
@@ -35,7 +35,6 @@ export const fetchProducts = createAsyncThunk(
             if (params.colorFilter) query.append('color', params.colorFilter.toString());
             if (params.ratingsFilter) query.append('rating', params.ratingsFilter.toString());
             if (params.categoryFilter) query.append('category_name', params.categoryFilter.toString());
-            if (params.brandFilter) query.append('brand', params.brandFilter.toString());
 
             const queryString = query.toString();
             const url = queryString ? `/products?${queryString}` : '/products';

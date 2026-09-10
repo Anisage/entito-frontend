@@ -28,7 +28,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, updateQuantity, removeItem })
               {item.item.name}
             </h3>
             <p className="text-xs text-ink-muted mt-1">
-              {item.item.brand || 'BR.F'} · Size {item.size} · {item.color}
+              ENTITO · Size {item.size} · {item.color}
             </p>
           </div>
           <button

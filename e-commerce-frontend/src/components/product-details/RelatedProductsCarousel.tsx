@@ -50,8 +50,10 @@ const RelatedProductsCarousel = () => {
 
       <div className="mt-12 bg-ink-1 text-white rounded-card-lg p-8 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <span className="chip bg-white/10 text-white border-transparent mb-3">Brand spotlight</span>
-          <h3 className="font-display text-2xl md:text-3xl mt-2">Popular brands, up to 25% off</h3>
+          <span className="chip bg-white/10 text-white border-transparent mb-3">The collection</span>
+          {/* Was "Popular brands, up to 25% off" - wrong on both counts here:
+              Entito is the only brand, and that discount is not a real offer. */}
+          <h3 className="font-display text-2xl md:text-3xl mt-2">See the whole Entito range</h3>
         </div>
         <button onClick={() => navigate('/products')} className="btn-pill btn-light">
           Shop the edit

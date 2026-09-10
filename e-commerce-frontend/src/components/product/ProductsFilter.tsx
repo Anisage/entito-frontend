@@ -11,14 +11,12 @@ interface ProductFilterProps {
   colorFilter?: string;
   ratingsFilter?: number;
   categoryFilter?: string;
-  brandFilter?: string;
   setRatingsFilter: (rating: number | undefined) => void;
   onPriceRangeChange: (priceRange: { min?: number; max?: number }) => void;
   onSizeChange: (size: string) => void;
   onColorChange: (color: string) => void;
   onClearFilters?: () => void;
   onCategoryChange: (category: string) => void;
-  onBrandChange: (brand: string) => void;
 }
 
 const colorSwatches = [
@@ -32,7 +30,6 @@ const colorSwatches = [
   { name: 'Sand', hex: '#e7dcc5' },
 ];
 
-const brands = ['Nike', 'Adidas', 'H&M', 'Zara', 'Uniqlo', 'Gap', 'Lacoste', 'Puma'];
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
@@ -54,7 +51,6 @@ const ProductsFilter: React.FC<ProductFilterProps> = ({
   setRatingsFilter,
   onClearFilters,
   onCategoryChange,
-  onBrandChange,
 }) => {
   const activeFiltersCount = [
     minPrice && minPrice > 0,
@@ -100,23 +96,6 @@ const ProductsFilter: React.FC<ProductFilterProps> = ({
               />
               <span className="text-sm text-ink-1 group-hover:text-ink-muted transition-colors">
                 {category.name}
-              </span>
-            </label>
-          ))}
-        </div>
-      </Section>
-
-      <Section title="Brands">
-        <div className="space-y-2.5 max-h-44 overflow-y-auto pr-2">
-          {brands.map((brand) => (
-            <label key={brand} className="flex items-center gap-3 cursor-pointer group">
-              <input
-                type="checkbox"
-                className="w-4 h-4 rounded border-line text-ink-1 focus:ring-ink-1 focus:ring-1"
-                onChange={() => onBrandChange(brand)}
-              />
-              <span className="text-sm text-ink-1 group-hover:text-ink-muted transition-colors">
-                {brand}
               </span>
             </label>
           ))}

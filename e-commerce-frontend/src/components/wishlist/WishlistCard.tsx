@@ -74,7 +74,7 @@ const WishlistCard: React.FC<WishlistCardProps> = ({ item }) => {
           </div>
         </div>
         <p className="text-xs text-ink-muted mt-1 line-clamp-1">
-          {item.brand || item.category_name || 'BR.F Essentials'}
+          {item.category_name || 'ENTITO'}
         </p>
         <div className="flex items-center justify-between mt-3">
           <div className="flex items-baseline gap-2">

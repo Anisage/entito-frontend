@@ -20,7 +20,10 @@ export interface Product {
     price: string,
     units_in_stock: number,
     image: string | null,
-    category_name: number,
+    // The API sends category.name - a string. This was typed `number`,
+    // which typechecked fine and would have quietly produced wrong output
+    // anywhere it was used numerically.
+    category_name: string,
     main_image: Image | null,
     product_images: Image[] | [],
     sizes: string[] | [],
@@ -29,7 +32,9 @@ export interface Product {
     reviews: Review[] | [],
     rating?: number,
     original_price?: string | null,
-    brand?: string | null,
+    // `brand` intentionally absent: Entito is a single clothing line, so
+    // every garment is Entito's and a per-product brand means nothing.
+    // The API no longer serialises it either.
     discount_percentage?: number | null,
     discount?: number | null,
 }

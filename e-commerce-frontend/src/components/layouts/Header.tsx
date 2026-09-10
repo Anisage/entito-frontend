@@ -67,7 +67,7 @@ const Header = () => {
           <div className="relative w-full">
             <input
               type="text"
-              placeholder="Search for products, brands…"
+              placeholder="Search dresses, tops, sizes…"
               className="w-full pl-11 pr-4 py-3 text-sm bg-surface border border-line rounded-full focus:outline-none focus:border-ink-1 transition-colors"
             />
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-muted" />
