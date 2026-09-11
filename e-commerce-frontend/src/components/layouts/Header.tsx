@@ -45,8 +45,8 @@ const Header = () => {
           onClick={() => navigate('/')}
           className="flex items-baseline cursor-pointer shrink-0"
         >
-          <span className="font-display text-3xl tracking-tight text-ink-1">BR.</span>
-          <span className="font-display text-3xl tracking-tight text-ink-soft">F</span>
+          <span className="font-display text-3xl tracking-tight text-ink-1">ENTI</span>
+          <span className="font-display text-3xl tracking-tight text-ink-soft">TO</span>
         </button>
 
         {/* Primary nav */}

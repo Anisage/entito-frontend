@@ -26,7 +26,6 @@ import Lookbook from './pages/Lookbook';
 // Company
 import AboutUs from './pages/AboutUs';
 import Stores from './pages/Stores';
-import Sustainability from './pages/Sustainability';
 import Careers from './pages/Careers';
 import Press from './pages/Press';
 
@@ -39,8 +38,6 @@ import Contact from './pages/Contact';
 
 // Connect
 import Newsletter from './pages/Newsletter';
-import Affiliates from './pages/Affiliates';
-import Wholesale from './pages/Wholesale';
 import GiftCards from './pages/GiftCards';
 
 // Legal
@@ -93,7 +90,6 @@ function App() {
         {/* Company */}
         <Route path='/about' element={<MainLayout><AboutUs /></MainLayout>} />
         <Route path='/stores' element={<MainLayout><Stores /></MainLayout>} />
-        <Route path='/sustainability' element={<MainLayout><Sustainability /></MainLayout>} />
         <Route path='/careers' element={<MainLayout><Careers /></MainLayout>} />
         <Route path='/press' element={<MainLayout><Press /></MainLayout>} />
 
@@ -106,8 +102,6 @@ function App() {
 
         {/* Connect */}
         <Route path='/newsletter' element={<MainLayout><Newsletter /></MainLayout>} />
-        <Route path='/affiliates' element={<MainLayout><Affiliates /></MainLayout>} />
-        <Route path='/wholesale' element={<MainLayout><Wholesale /></MainLayout>} />
         <Route path='/gift-cards' element={<MainLayout><GiftCards /></MainLayout>} />
 
         {/* Accounts */}

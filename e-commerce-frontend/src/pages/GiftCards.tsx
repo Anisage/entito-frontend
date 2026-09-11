@@ -39,8 +39,8 @@ const GiftCards = () => {
             <div className="relative overflow-hidden rounded-card-lg bg-gradient-to-br from-ink-1 via-ink-2 to-ink-1 p-8 md:p-10 aspect-[3/4] flex flex-col justify-between text-white shadow-xl">
               <div>
                 <div className="flex items-baseline">
-                  <span className="font-display text-5xl">BR.</span>
-                  <span className="font-display text-5xl text-white/40">F</span>
+                  <span className="font-display text-5xl">ENTI</span>
+                  <span className="font-display text-5xl text-white/40">TO</span>
                 </div>
                 <p className="text-xs uppercase tracking-wider text-white/50 mt-2">
                   Gift card

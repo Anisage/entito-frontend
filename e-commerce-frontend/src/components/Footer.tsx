@@ -29,7 +29,6 @@ const Footer = () => {
       links: [
         { label: "About us", to: "/about" },
         { label: "Stores", to: "/stores" },
-        { label: "Sustainability", to: "/sustainability" },
         { label: "Careers", to: "/careers" },
         { label: "Press", to: "/press" },
       ],
@@ -48,8 +47,6 @@ const Footer = () => {
       title: "Connect",
       links: [
         { label: "Newsletter", to: "/newsletter" },
-        { label: "Affiliates", to: "/affiliates" },
-        { label: "Wholesale", to: "/wholesale" },
         { label: "Gift cards", to: "/gift-cards" },
       ],
     },
@@ -62,8 +59,8 @@ const Footer = () => {
           {/* Brand block */}
           <div className="lg:col-span-4 space-y-6">
             <Link to="/" className="flex items-baseline">
-              <span className="font-display text-5xl">BR.</span>
-              <span className="font-display text-5xl text-white/40">F</span>
+              <span className="font-display text-5xl">ENTI</span>
+              <span className="font-display text-5xl text-white/40">TO</span>
             </Link>
             <p className="text-sm text-white/60 max-w-xs leading-relaxed">
               Modern wardrobe staples, made to last. Try-on at home, M-Pesa
