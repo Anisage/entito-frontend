@@ -18,6 +18,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Account from './pages/Account';
+import OrderConfirmation from './pages/OrderConfirmation';
 
 // Shop
 import Lookbook from './pages/Lookbook';
@@ -62,7 +63,18 @@ function App() {
         <Route path="/" element={<MainLayout><Index /></MainLayout>} />
         <Route path="/product/:id" element={<MainLayout><ProductDetail /></MainLayout>} />
         <Route path="/cart" element={<MainLayout><CartPage /></MainLayout>} />
-        <Route path="/checkout" element={<MainLayout><Checkout /></MainLayout>} />
+        <Route
+          path="/checkout"
+          element={
+            <MainLayout>
+              {/* Checkout creates an order against the signed-in shopper, so
+                  the API requires an account. Guarding here means a visitor
+                  is sent to sign in rather than hitting a 403 after filling
+                  in the whole form. */}
+              <ProtectedRoute><Checkout /></ProtectedRoute>
+            </MainLayout>
+          }
+        />
         <Route path="/products" element={<MainLayout><Products /></MainLayout>} />
         <Route path="/wishlist" element={<MainLayout><WishlistPage /></MainLayout>} />
         <Route path='/recent-views' element={<MainLayout><RecentFindsPage /></MainLayout>} />
@@ -101,6 +113,14 @@ function App() {
         {/* Accounts */}
         <Route path='/login' element={<MainLayout><Login /></MainLayout>} />
         <Route path='/register' element={<MainLayout><Register /></MainLayout>} />
+        <Route
+          path='/order-confirmation/:id'
+          element={
+            <MainLayout>
+              <ProtectedRoute><OrderConfirmation /></ProtectedRoute>
+            </MainLayout>
+          }
+        />
         <Route
           path='/account'
           element={
