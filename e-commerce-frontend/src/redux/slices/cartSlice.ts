@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { CartState, CartItemType } from "../../types/cart";
+import { loadPersistedCart } from "../persist";
 
-const initialState: CartState = {
+const emptyCart: CartState = {
     cart: {
         items: [],
         subtotal: 0,
@@ -15,13 +16,16 @@ const initialState: CartState = {
     error: null,
 }
 
+// Start from whatever the shopper had in her bag last time. Without this the
+// basket only exists until the page reloads, and being sent to sign in on the
+// way to checkout is enough to lose it.
+const initialState: CartState = loadPersistedCart() ?? emptyCart;
+
 export const cartSlice = createSlice({
     name: "cart",
     initialState,
     reducers: {
         addItemToCart: (state, action: PayloadAction<CartItemType>) => {
-            console.log('Current cart state before adding item:', state.cart);
-            console.log('Adding item to cart:', action.payload);
 
             const existingItemIndex = state.cart.items.findIndex(
                 item => 
@@ -64,8 +68,6 @@ export const cartSlice = createSlice({
                     state.cart.percentageDiscount += action.payload.item.discount_percentage || 0;
                 }
             }
-
-            console.log('Updated cart state after adding item:', state.cart);
         },
         removeItemFromCart: (state, action: PayloadAction<number>) => {
             const itemIndex = state.cart.items.findIndex(item => item.item.id === action.payload);

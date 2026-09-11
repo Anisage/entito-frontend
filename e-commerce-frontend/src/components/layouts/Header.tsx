@@ -33,8 +33,12 @@ const Header = () => {
       {/* Promo bar */}
       <div className="bg-ink-1 text-white text-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center justify-between">
-          <span className="hidden sm:block opacity-80">Free express delivery on orders over Ksh 5,000</span>
-          <span className="opacity-80">Try-on at home · 7-day returns</span>
+          {/* Whatever goes here has to be true. Delivery is priced by
+              area with no free threshold, so the old "free express
+              delivery over Ksh 5,000" line was a promise the shop would
+              have had to break at checkout. */}
+          <span className="hidden sm:block opacity-80">Delivery countrywide · priced by area</span>
+          <span className="opacity-80">7-day returns</span>
         </div>
       </div>
 

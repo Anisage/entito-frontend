@@ -1,12 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { WishlistItem, WishlistState } from '../../types/wishlist';
+import { loadPersistedWishlist } from '../persist';
 
-const initialState: WishlistState = {
+const emptyWishlist: WishlistState = {
     items: [],
     loading: false,
     error: null,
 };
+
+// Saved pieces survive a reload for the same reason the basket does.
+const initialState: WishlistState = loadPersistedWishlist() ?? emptyWishlist;
 
 const wishlistSlice = createSlice({
     name: 'wishlist',

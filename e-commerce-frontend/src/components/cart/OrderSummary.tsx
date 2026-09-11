@@ -83,7 +83,10 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
 
       <div className="flex items-center gap-2 mt-4 text-xs text-ink-muted">
         <ShieldCheck size={14} />
-        <span>Secure checkout · M-Pesa &amp; card accepted</span>
+        {/* Online payment is not connected yet - saying cards are
+            accepted here would be untrue at the very moment a shopper
+            is deciding to trust the shop. */}
+        <span>Place your order and we&rsquo;ll arrange payment with you</span>
       </div>
     </div>
   );
