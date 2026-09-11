@@ -36,9 +36,8 @@ const AboutUs = () => {
             A modern wardrobe,<br /> from Nairobi outward.
           </h1>
           <p className="text-ink-muted mt-4 max-w-xl">
-            BR.F is an AI-powered try-on marketplace for hair, beauty, and ready-to-wear.
-            We started in 2026 with a simple idea: people deserve to see how something
-            actually looks on them before they pay for it.
+            Entito Designs is a Nairobi womenswear label. We design and make our own
+            pieces, and we sell them here directly &mdash; no middlemen, no other brands.
           </p>
         </div>
       </section>
@@ -75,10 +74,12 @@ const AboutUs = () => {
           </div>
           <div className="md:col-span-7 space-y-4 text-ink-muted leading-relaxed">
             <p>
-              BR.F was founded in Nairobi by a group of designers, engineers, and
-              stylists who were tired of buying online and being disappointed by what
-              arrived. Hair, especially, was a guessing game — colour off, density wrong,
-              cut unflattering.
+              {/* TODO: replace with Entito's real founding story - when the label
+                  started, who is behind it, what it set out to do. Kept deliberately
+                  plain rather than invented. */}
+              Entito began with a simple frustration: clothes that look right online and
+              wrong in person. We keep our range small on purpose, so every piece earns
+              its place.
             </p>
             <p>
               So we built the try-on layer first, then the storefront around it. Drop a

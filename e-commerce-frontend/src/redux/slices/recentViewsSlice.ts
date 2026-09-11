@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { Product, ProductsResponse } from "../../types/product";
+import type { Product } from "../../types/product";
 import type { RecentViewState } from "../../types/recentViews";
 import { get } from "../../api";
 

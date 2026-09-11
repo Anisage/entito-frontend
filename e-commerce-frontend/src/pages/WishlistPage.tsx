@@ -9,7 +9,6 @@ import {
 } from '../redux/store/wishlistSlice';
 import WishlistCard from '../components/wishlist/WishlistCard';
 import WishlistEmptyState from '../components/wishlist/WishlistEmptyState';
-import WishlistDemo from '../components/wishlist/WishlistDemo';
 
 const WishlistPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -119,8 +118,6 @@ const WishlistPage: React.FC = () => {
       </section>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-        <WishlistDemo />
-
         {items.length === 0 ? (
           <WishlistEmptyState />
         ) : (

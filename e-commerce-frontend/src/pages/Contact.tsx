@@ -141,7 +141,6 @@ const Contact = () => {
                       <option>Order help</option>
                       <option>Returns &amp; refunds</option>
                       <option>Try-on / sizing</option>
-                      <option>Wholesale</option>
                       <option>Press</option>
                       <option>Careers</option>
                       <option>Something else</option>

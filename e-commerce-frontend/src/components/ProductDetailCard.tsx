@@ -94,7 +94,7 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ product }) => {
           </div>
         </div>
         <p className="text-xs text-ink-muted mt-1 line-clamp-1">
-          {product.brand || product.category_name || 'BR.F Essentials'}
+          {product.category_name || 'ENTITO'}
         </p>
 
         {/* Color swatches */}

@@ -16,7 +16,7 @@ const PaymentCard: React.FC<PaymentCardProps> = ({
 
     <div className="flex items-start justify-between relative z-10">
       <div className="w-12 h-9 bg-white/10 rounded-md" />
-      <span className="text-xs text-white/60">BR.F · Pay</span>
+      <span className="text-xs text-white/60">ENTITO · Pay</span>
     </div>
 
     <div className="relative z-10">

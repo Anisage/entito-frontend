@@ -8,26 +8,16 @@ interface Mention {
   url: string;
 }
 
-const MENTIONS: Mention[] = [
-  {
-    outlet: "Business Daily",
-    date: "May 2026",
-    headline: "Nairobi-based BR.F is betting on AI try-on for hair and beauty",
-    url: "#",
-  },
-  {
-    outlet: "Techweez",
-    date: "April 2026",
-    headline: "BR.F launches visual search powered by OpenCLIP and pgvector",
-    url: "#",
-  },
-  {
-    outlet: "Capital FM",
-    date: "March 2026",
-    headline: "Local commerce: the storefronts redesigning the Kenyan shopping experience",
-    url: "#",
-  },
-];
+// Deliberately empty.
+//
+// This list previously held three invented headlines attributed to real
+// publications - Business Daily, Techweez and Capital FM - about a company
+// called BR.F, with `url: "#"`. Renaming the company to Entito would have
+// turned placeholder text into fabricated press coverage: a visitor would
+// reasonably believe those outlets had written about Entito.
+//
+// Add entries only for coverage that actually exists, with a real URL.
+const MENTIONS: Mention[] = [];
 
 const Press = () => {
   return (
@@ -46,7 +36,7 @@ const Press = () => {
             For journalists,<br /> partners, and the curious.
           </h1>
           <p className="text-ink-muted mt-4 max-w-xl">
-            Looking for our brand assets, founder bios, or the latest from BR.F?
+            Looking for our brand assets, founder bios, or the latest from Entito?
             You'll find it all below — and you can always reach our team directly.
           </p>
         </div>
@@ -75,7 +65,7 @@ const Press = () => {
             </div>
             <p className="font-display text-2xl text-ink-1">Founder bios</p>
             <p className="text-sm text-ink-muted mt-2">
-              Short and long-form bios for the BR.F leadership team. PDF.
+              Short and long-form bios for the Entito leadership team. PDF.
             </p>
           </a>
           <a
@@ -95,6 +85,15 @@ const Press = () => {
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <p className="font-display text-3xl text-ink-1 mb-6">In the news</p>
+        {MENTIONS.length === 0 ? (
+          <div className="bg-surface border border-line-soft rounded-card-lg p-8 text-center">
+            <p className="text-ink-1">No coverage to share just yet.</p>
+            <p className="text-sm text-ink-muted mt-2">
+              Writing about Kenyan fashion? We&rsquo;d love to talk &mdash; reach us
+              through the contact page.
+            </p>
+          </div>
+        ) : (
         <div className="space-y-3">
           {MENTIONS.map((m) => (
             <a
@@ -117,6 +116,7 @@ const Press = () => {
             </a>
           ))}
         </div>
+        )}
       </section>
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">

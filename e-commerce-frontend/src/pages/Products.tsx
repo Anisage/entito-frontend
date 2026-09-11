@@ -26,7 +26,6 @@ const Products = () => {
   const [ratingsFilter, setRatingsFilter] = useState<number | undefined>();
   const [colorFilter, setColorFilter] = useState<string | undefined>();
   const [categoryFilter, setCategoryFilter] = useState<string | undefined>();
-  const [brandFilter, setBrandFilter] = useState<string | undefined>();
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
@@ -38,8 +37,7 @@ const Products = () => {
       sizeFilter ||
       colorFilter ||
       ratingsFilter ||
-      categoryFilter ||
-      brandFilter
+      categoryFilter
     ) {
       dispatch(
         fetchProducts({
@@ -50,7 +48,6 @@ const Products = () => {
           colorFilter,
           ratingsFilter,
           categoryFilter,
-          brandFilter,
         }) as any
       );
       return;
@@ -65,7 +62,6 @@ const Products = () => {
     colorFilter,
     ratingsFilter,
     categoryFilter,
-    brandFilter,
   ]);
 
   const handleClearFilters = () => {
@@ -75,7 +71,6 @@ const Products = () => {
     setColorFilter(undefined);
     setRatingsFilter(undefined);
     setCategoryFilter(undefined);
-    setBrandFilter(undefined);
   };
 
   return (
@@ -129,7 +124,6 @@ const Products = () => {
               setRatingsFilter={setRatingsFilter}
               colorFilter={colorFilter}
               categoryFilter={categoryFilter}
-              brandFilter={brandFilter}
               onColorChange={setColorFilter}
               onPriceRangeChange={({ min, max }) => {
                 setMinPrice(min);
@@ -137,7 +131,6 @@ const Products = () => {
               }}
               onClearFilters={handleClearFilters}
               onCategoryChange={setCategoryFilter}
-              onBrandChange={setBrandFilter}
             />
           </div>
 
@@ -247,7 +240,6 @@ const Products = () => {
               setRatingsFilter={setRatingsFilter}
               colorFilter={colorFilter}
               categoryFilter={categoryFilter}
-              brandFilter={brandFilter}
               onColorChange={setColorFilter}
               onPriceRangeChange={({ min, max }) => {
                 setMinPrice(min);
@@ -255,7 +247,6 @@ const Products = () => {
               }}
               onClearFilters={handleClearFilters}
               onCategoryChange={setCategoryFilter}
-              onBrandChange={setBrandFilter}
             />
           </div>
         </div>

@@ -12,13 +12,20 @@ import VisualSearch from './pages/VisualSearch';
 import VisualSearchUnavailable from './pages/VisualSearchUnavailable';
 import { getConfig } from './Config';
 
+// Accounts
+import { AuthProvider } from './auth/AuthProvider';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Account from './pages/Account';
+import OrderConfirmation from './pages/OrderConfirmation';
+
 // Shop
 import Lookbook from './pages/Lookbook';
 
 // Company
 import AboutUs from './pages/AboutUs';
 import Stores from './pages/Stores';
-import Sustainability from './pages/Sustainability';
 import Careers from './pages/Careers';
 import Press from './pages/Press';
 
@@ -31,8 +38,6 @@ import Contact from './pages/Contact';
 
 // Connect
 import Newsletter from './pages/Newsletter';
-import Affiliates from './pages/Affiliates';
-import Wholesale from './pages/Wholesale';
 import GiftCards from './pages/GiftCards';
 
 // Legal
@@ -46,12 +51,27 @@ function App() {
 
   return (
     <Router>
+      {/* AuthProvider sits inside Router so its children can navigate, and
+          wraps every route so the token provider is registered before any
+          page fires an API call. */}
+      <AuthProvider>
 
       <Routes>
         <Route path="/" element={<MainLayout><Index /></MainLayout>} />
         <Route path="/product/:id" element={<MainLayout><ProductDetail /></MainLayout>} />
         <Route path="/cart" element={<MainLayout><CartPage /></MainLayout>} />
-        <Route path="/checkout" element={<MainLayout><Checkout /></MainLayout>} />
+        <Route
+          path="/checkout"
+          element={
+            <MainLayout>
+              {/* Checkout creates an order against the signed-in shopper, so
+                  the API requires an account. Guarding here means a visitor
+                  is sent to sign in rather than hitting a 403 after filling
+                  in the whole form. */}
+              <ProtectedRoute><Checkout /></ProtectedRoute>
+            </MainLayout>
+          }
+        />
         <Route path="/products" element={<MainLayout><Products /></MainLayout>} />
         <Route path="/wishlist" element={<MainLayout><WishlistPage /></MainLayout>} />
         <Route path='/recent-views' element={<MainLayout><RecentFindsPage /></MainLayout>} />
@@ -70,7 +90,6 @@ function App() {
         {/* Company */}
         <Route path='/about' element={<MainLayout><AboutUs /></MainLayout>} />
         <Route path='/stores' element={<MainLayout><Stores /></MainLayout>} />
-        <Route path='/sustainability' element={<MainLayout><Sustainability /></MainLayout>} />
         <Route path='/careers' element={<MainLayout><Careers /></MainLayout>} />
         <Route path='/press' element={<MainLayout><Press /></MainLayout>} />
 
@@ -83,15 +102,34 @@ function App() {
 
         {/* Connect */}
         <Route path='/newsletter' element={<MainLayout><Newsletter /></MainLayout>} />
-        <Route path='/affiliates' element={<MainLayout><Affiliates /></MainLayout>} />
-        <Route path='/wholesale' element={<MainLayout><Wholesale /></MainLayout>} />
         <Route path='/gift-cards' element={<MainLayout><GiftCards /></MainLayout>} />
+
+        {/* Accounts */}
+        <Route path='/login' element={<MainLayout><Login /></MainLayout>} />
+        <Route path='/register' element={<MainLayout><Register /></MainLayout>} />
+        <Route
+          path='/order-confirmation/:id'
+          element={
+            <MainLayout>
+              <ProtectedRoute><OrderConfirmation /></ProtectedRoute>
+            </MainLayout>
+          }
+        />
+        <Route
+          path='/account'
+          element={
+            <MainLayout>
+              <ProtectedRoute><Account /></ProtectedRoute>
+            </MainLayout>
+          }
+        />
 
         {/* Legal */}
         <Route path='/privacy' element={<MainLayout><Privacy /></MainLayout>} />
         <Route path='/terms' element={<MainLayout><Terms /></MainLayout>} />
         <Route path='/cookies' element={<MainLayout><Cookies /></MainLayout>} />
       </Routes>
+      </AuthProvider>
 
     </Router>
   )

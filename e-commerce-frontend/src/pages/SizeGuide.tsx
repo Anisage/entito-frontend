@@ -154,15 +154,16 @@ const SizeGuide = () => {
           <div className="bg-surface-2 rounded-card-lg p-6 md:p-8 flex flex-col justify-between">
             <div>
               <p className="font-display text-2xl text-ink-1">
-                Not sure? Try it on first.
+                Still not sure?
               </p>
               <p className="text-ink-muted mt-3 text-sm">
-                Every product on BR.F can be previewed with our AI fitting room
-                before you commit. It's the fastest way to know.
+                Tell us your usual size and what you're between, and we'll tell you
+                honestly which one to take. We'd rather you kept the piece than
+                returned it.
               </p>
             </div>
-            <Link to="/visual-search" className="btn-pill btn-primary self-start mt-6">
-              Try on a piece
+            <Link to="/contact" className="btn-pill btn-primary self-start mt-6">
+              Ask us
               <ArrowUpRight size={14} />
             </Link>
           </div>

@@ -8,7 +8,7 @@ const Testimonials = () => {
       initials: 'MJ',
     },
     {
-      text: 'Fast shipping, great packaging, and the clothes look exactly like the photos. BR.F has become my go-to brand.',
+      text: 'Fast shipping, great packaging, and the clothes look exactly like the photos. Entito has become my go-to.',
       name: 'Sarah Kim',
       initials: 'SK',
     },

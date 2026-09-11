@@ -4,7 +4,7 @@ const Cookies = () => (
   <LegalLayout
     breadcrumb="Cookies"
     title="Cookie policy"
-    subtitle="What cookies and similar technologies we use on BR.F, and how you can control them. Read alongside our Privacy policy."
+    subtitle="What cookies and similar technologies we use on Entito, and how you can control them. Read alongside our Privacy policy."
     lastUpdated="May 2026"
     sections={[
       {

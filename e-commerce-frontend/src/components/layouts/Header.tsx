@@ -1,4 +1,5 @@
 import { Search, ShoppingBag, Heart, User, ChevronDown, Menu } from 'lucide-react';
+import { useAuth } from '../../auth/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../../redux/store';
@@ -8,6 +9,7 @@ import { cartItemsCount } from '../../redux/slices/cartSlice';
 
 const Header = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
   const wishlistCount = useSelector((state: RootState) => state.wishlist.items.length);
   const params = new URLSearchParams(window.location.search);
@@ -43,8 +45,8 @@ const Header = () => {
           onClick={() => navigate('/')}
           className="flex items-baseline cursor-pointer shrink-0"
         >
-          <span className="font-display text-3xl tracking-tight text-ink-1">BR.</span>
-          <span className="font-display text-3xl tracking-tight text-ink-soft">F</span>
+          <span className="font-display text-3xl tracking-tight text-ink-1">ENTI</span>
+          <span className="font-display text-3xl tracking-tight text-ink-soft">TO</span>
         </button>
 
         {/* Primary nav */}
@@ -65,7 +67,7 @@ const Header = () => {
           <div className="relative w-full">
             <input
               type="text"
-              placeholder="Search for products, brands…"
+              placeholder="Search dresses, tops, sizes…"
               className="w-full pl-11 pr-4 py-3 text-sm bg-surface border border-line rounded-full focus:outline-none focus:border-ink-1 transition-colors"
             />
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-muted" />
@@ -103,7 +105,11 @@ const Header = () => {
             )}
           </button>
 
-          <button className="w-11 h-11 hidden md:flex items-center justify-center rounded-full hover:bg-surface-3 transition-colors" aria-label="Account">
+          <button
+            onClick={() => navigate(user ? '/account' : '/login')}
+            className="w-11 h-11 hidden md:flex items-center justify-center rounded-full hover:bg-surface-3 transition-colors"
+            aria-label={user ? 'Your account' : 'Sign in'}
+          >
             <User size={20} className="text-ink-1" />
           </button>
 

@@ -26,7 +26,7 @@ const BrandStory = () => {
               Built to last, made to move
             </h2>
             <p className="text-ink-muted leading-relaxed mt-6">
-              BR.F is small-batch and ethically produced in Nairobi. Every piece starts with sustainable fabric and ends in a wardrobe that gets better with time.
+              Entito is small-batch and ethically produced in Nairobi. Every piece starts with sustainable fabric and ends in a wardrobe that gets better with time.
             </p>
           </div>
 
