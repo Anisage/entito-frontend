@@ -40,8 +40,17 @@ const OrderConfirmation = () => {
                 <h1 className="font-display text-4xl text-ink-1 mb-2">Thank you</h1>
                 <p className="text-ink-muted">
                     Your order <span className="text-ink-1 font-medium">#{order.id}</span> is in.
-                    We&rsquo;ve sent a confirmation to your email.
+                    We&rsquo;ve sent the details to your email.
                 </p>
+                {order.payment_status === 'unpaid' && (
+                    /* Say plainly what happens next. The order is placed but not
+                       paid for, and pretending otherwise would leave someone
+                       waiting for a parcel nobody is packing. */
+                    <p className="mt-4 mx-auto max-w-md text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-card px-4 py-3">
+                        We&rsquo;ll be in touch shortly to arrange payment and confirm
+                        delivery. Your order is reserved until then.
+                    </p>
+                )}
             </div>
 
             <div className="bg-surface border border-line-soft rounded-card-lg p-6 mb-6">
@@ -67,7 +76,11 @@ const OrderConfirmation = () => {
                         <Row label="Discount" value={`− ${money(order.discount)}`} />
                     )}
                     <Row
-                        label={order.delivery_method_detail?.name || 'Delivery'}
+                        label={
+                            order.delivery_method_detail
+                                ? `${order.delivery_method_detail.name}${order.delivery_zone_name ? ` — ${order.delivery_zone_name}` : ''}`
+                                : 'Delivery'
+                        }
                         value={money(order.delivery_fee)}
                     />
                     <div className="flex justify-between pt-3 border-t border-line">

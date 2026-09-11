@@ -4,7 +4,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { get, post } from '../../api';
 import type {
     CreateOrderPayload,
-    DeliveryMethod,
+    DeliveryZone,
     Order,
     OrdersState,
 } from '../../types/order';
@@ -12,7 +12,7 @@ import type {
 const initialState: OrdersState = {
     orders: [],
     lastCreated: null,
-    deliveryMethods: [],
+    deliveryZones: [],
     loading: false,
     submitting: false,
     error: null,
@@ -32,16 +32,18 @@ const apiMessage = (error: any, fallback: string): string => {
 };
 
 /**
- * The delivery options and their prices.
+ * Delivery areas, each with its methods already priced for it.
  *
- * Fetched rather than hardcoded: the price the shopper is shown must be the
- * same one the server will charge, and that lives in the database.
+ * Fetched rather than hardcoded, and fetched as zones rather than methods:
+ * the price shown must be the one the server will charge, and that depends
+ * on where the parcel is going. One request gives the whole grid, so
+ * changing zone re-prices without another round trip.
  */
-export const fetchDeliveryMethods = createAsyncThunk<DeliveryMethod[]>(
-    'orders/fetchDeliveryMethods',
+export const fetchDeliveryZones = createAsyncThunk<DeliveryZone[]>(
+    'orders/fetchDeliveryZones',
     async (_, { rejectWithValue }) => {
         try {
-            return await get<DeliveryMethod[]>('/delivery-methods/');
+            return await get<DeliveryZone[]>('/delivery-zones/');
         } catch (error: any) {
             return rejectWithValue(apiMessage(error, 'Could not load delivery options.'));
         }
@@ -83,10 +85,10 @@ const ordersSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchDeliveryMethods.fulfilled, (state, action: PayloadAction<DeliveryMethod[]>) => {
-                state.deliveryMethods = action.payload;
+            .addCase(fetchDeliveryZones.fulfilled, (state, action: PayloadAction<DeliveryZone[]>) => {
+                state.deliveryZones = action.payload;
             })
-            .addCase(fetchDeliveryMethods.rejected, (state, action) => {
+            .addCase(fetchDeliveryZones.rejected, (state, action) => {
                 state.error = action.payload as string;
             })
 
@@ -123,7 +125,7 @@ export const { clearOrderError } = ordersSlice.actions;
 
 export const selectOrders = (s: { orders: OrdersState }) => s.orders.orders;
 export const selectLastCreatedOrder = (s: { orders: OrdersState }) => s.orders.lastCreated;
-export const selectDeliveryMethods = (s: { orders: OrdersState }) => s.orders.deliveryMethods;
+export const selectDeliveryZones = (s: { orders: OrdersState }) => s.orders.deliveryZones;
 export const selectOrdersLoading = (s: { orders: OrdersState }) => s.orders.loading;
 export const selectOrderSubmitting = (s: { orders: OrdersState }) => s.orders.submitting;
 export const selectOrdersError = (s: { orders: OrdersState }) => s.orders.error;

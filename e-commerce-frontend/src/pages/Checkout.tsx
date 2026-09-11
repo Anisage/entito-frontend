@@ -9,8 +9,8 @@ import { useAuth } from '../auth/AuthProvider';
 import { cartItems, clearCart } from '../redux/slices/cartSlice';
 import {
     createOrder,
-    fetchDeliveryMethods,
-    selectDeliveryMethods,
+    fetchDeliveryZones,
+    selectDeliveryZones,
     selectOrderSubmitting,
     selectOrdersError,
 } from '../redux/slices/ordersSlice';
@@ -23,10 +23,11 @@ const Checkout = () => {
     const { user } = useAuth();
 
     const items = useSelector(cartItems);
-    const deliveryMethods = useSelector(selectDeliveryMethods);
+    const zones = useSelector(selectDeliveryZones);
     const submitting = useSelector(selectOrderSubmitting);
     const error = useSelector(selectOrdersError);
 
+    const [zoneId, setZoneId] = useState<number | null>(null);
     const [deliveryId, setDeliveryId] = useState<number | null>(null);
     const [form, setForm] = useState({
         shipping_full_name: '',
@@ -38,7 +39,7 @@ const Checkout = () => {
     });
 
     useEffect(() => {
-        dispatch(fetchDeliveryMethods() as any);
+        dispatch(fetchDeliveryZones() as any);
     }, [dispatch]);
 
     // Prefill the name from the account, so a signed-in shopper isn't asked
@@ -49,19 +50,34 @@ const Checkout = () => {
         }
     }, [user]);
 
-    // Default to the first option, which the API returns cheapest-first.
+    // Default to the first zone once they arrive.
     useEffect(() => {
-        if (deliveryId === null && deliveryMethods.length > 0) {
-            setDeliveryId(deliveryMethods[0].id);
+        if (zoneId === null && zones.length > 0) setZoneId(zones[0].id);
+    }, [zones, zoneId]);
+
+    const selectedZone = zones.find((z) => z.id === zoneId) || null;
+    const methods = selectedZone?.methods ?? [];
+
+    // Whenever the area changes, re-pick the delivery method. Keeping the
+    // old selection would be wrong twice over: the price differs by zone,
+    // and the method may not reach the new one at all - the server would
+    // reject it after the shopper had filled in everything else.
+    useEffect(() => {
+        if (methods.length === 0) {
+            setDeliveryId(null);
+            return;
         }
-    }, [deliveryMethods, deliveryId]);
+        if (deliveryId === null || !methods.some((m) => m.id === deliveryId)) {
+            setDeliveryId(methods[0].id);
+        }
+    }, [methods, deliveryId]);
 
     // An empty basket has nothing to check out.
     useEffect(() => {
         if (items.length === 0) navigate('/cart', { replace: true });
     }, [items.length, navigate]);
 
-    const selectedDelivery = deliveryMethods.find((m) => m.id === deliveryId) || null;
+    const selectedDelivery = methods.find((m) => m.id === deliveryId) || null;
 
     // Display only. The server recomputes all of this from the products and
     // the delivery method, and its answer is the one that counts - so if
@@ -85,6 +101,7 @@ const Checkout = () => {
         const result: any = await dispatch(createOrder({
             ...form,
             delivery_method: deliveryId,
+            delivery_zone: zoneId,
             cart_items: items.map(toOrderItem),
         }) as any);
 
@@ -134,12 +151,31 @@ const Checkout = () => {
                         </section>
 
                         <section>
-                            <StepHeading n={2} title="Delivery method" />
-                            {deliveryMethods.length === 0 ? (
+                            <StepHeading n={2} title="Delivery" />
+                            {zones.length === 0 ? (
                                 <p className="text-sm text-ink-muted">Loading delivery options…</p>
                             ) : (
+                              <>
+                                <label className="block mb-5">
+                                    <span className="block text-xs text-ink-muted mb-1">Delivery area</span>
+                                    <select
+                                        value={zoneId ?? ''}
+                                        onChange={(e) => setZoneId(Number(e.target.value))}
+                                        className="w-full px-4 py-3 bg-surface border border-line rounded-card text-sm text-ink-1 focus:outline-none focus:border-ink-1"
+                                    >
+                                        {zones.map((zone) => (
+                                            <option key={zone.id} value={zone.id}>{zone.name}</option>
+                                        ))}
+                                    </select>
+                                    {selectedZone?.description && (
+                                        <span className="block text-xs text-ink-muted mt-1.5">
+                                            {selectedZone.description}
+                                        </span>
+                                    )}
+                                </label>
+
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                    {deliveryMethods.map((method) => {
+                                    {methods.map((method) => {
                                         const active = method.id === deliveryId;
                                         return (
                                             <button
@@ -158,6 +194,13 @@ const Checkout = () => {
                                         );
                                     })}
                                 </div>
+                                {methods.length === 0 && (
+                                    <p className="text-sm text-ink-muted">
+                                        We don&rsquo;t deliver to that area yet. Try another, or
+                                        get in touch and we&rsquo;ll see what we can do.
+                                    </p>
+                                )}
+                              </>
                             )}
                         </section>
 
@@ -214,7 +257,11 @@ const Checkout = () => {
                             </p>
                         )}
 
-                        <button type="submit" disabled={submitting} className="w-full btn-pill btn-primary py-4 disabled:opacity-60">
+                        <button
+                            type="submit"
+                            disabled={submitting || deliveryId === null}
+                            className="w-full btn-pill btn-primary py-4 disabled:opacity-60"
+                        >
                             {submitting ? 'Placing your order…' : 'Place order'}
                             {!submitting && <ArrowRight size={16} />}
                         </button>

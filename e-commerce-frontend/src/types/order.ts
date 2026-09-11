@@ -8,6 +8,15 @@ export interface DeliveryMethod {
     price: string;
 }
 
+/** A delivery area, with every method already priced for it. */
+export interface DeliveryZone {
+    id: number;
+    name: string;
+    description: string;
+    /** Only the methods that actually reach this zone. */
+    methods: DeliveryMethod[];
+}
+
 export interface OrderItem {
     id: number;
     product: number;
@@ -30,6 +39,11 @@ export interface Order {
     total_amount: string;
     delivery_method: number | null;
     delivery_method_detail: DeliveryMethod | null;
+    delivery_zone: number | null;
+    delivery_zone_name: string | null;
+    /** 'unpaid' until Entito confirms payment. Read-only over the API. */
+    payment_status: 'unpaid' | 'paid' | 'refunded';
+    paid_at: string | null;
     shipping_full_name: string;
     shipping_phone: string;
     shipping_address: string;
@@ -46,6 +60,7 @@ export interface CreateOrderPayload {
         description?: string;
     }>;
     delivery_method?: number | null;
+    delivery_zone?: number | null;
     shipping_full_name: string;
     shipping_phone: string;
     shipping_address: string;
@@ -57,7 +72,7 @@ export interface CreateOrderPayload {
 export interface OrdersState {
     orders: Order[];
     lastCreated: Order | null;
-    deliveryMethods: DeliveryMethod[];
+    deliveryZones: DeliveryZone[];
     loading: boolean;
     submitting: boolean;
     error: string | null;

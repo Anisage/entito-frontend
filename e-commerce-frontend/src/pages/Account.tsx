@@ -109,13 +109,26 @@ const OrderRow = ({ order }: { order: Order }) => {
                     <p className="text-ink-1 font-medium">Order #{order.id}</p>
                     <p className="text-xs text-ink-muted mt-0.5">{placed}</p>
                 </div>
-                <span
-                    className={`text-xs px-3 py-1 rounded-full border capitalize ${
-                        STATUS_STYLES[order.status] || 'bg-surface-2 text-ink-muted border-line'
-                    }`}
-                >
-                    {order.status}
-                </span>
+                <div className="flex flex-wrap gap-2">
+                    {/* Payment first: until an order is paid for, nothing else
+                        about its progress means much to the shopper. */}
+                    <span
+                        className={`text-xs px-3 py-1 rounded-full border ${
+                            order.payment_status === 'paid'
+                                ? 'bg-green-50 text-green-800 border-green-200'
+                                : 'bg-amber-50 text-amber-800 border-amber-200'
+                        }`}
+                    >
+                        {order.payment_status === 'paid' ? 'Paid' : 'Awaiting payment'}
+                    </span>
+                    <span
+                        className={`text-xs px-3 py-1 rounded-full border capitalize ${
+                            STATUS_STYLES[order.status] || 'bg-surface-2 text-ink-muted border-line'
+                        }`}
+                    >
+                        {order.status}
+                    </span>
+                </div>
             </div>
 
             <ul className="text-sm space-y-1 mb-4">
@@ -134,6 +147,7 @@ const OrderRow = ({ order }: { order: Order }) => {
                 <span className="text-xs text-ink-muted">
                     {itemCount} {itemCount === 1 ? 'item' : 'items'}
                     {order.delivery_method_detail && ` · ${order.delivery_method_detail.name}`}
+                    {order.delivery_zone_name && ` to ${order.delivery_zone_name}`}
                 </span>
                 <span className="font-medium text-ink-1 tabular-nums">{money(order.total_amount)}</span>
             </div>
