@@ -1,6 +1,8 @@
 import { Trash2, Plus, Minus } from 'lucide-react';
 import type { CartItemType } from '../../types/cart';
 import type React from 'react';
+import ProductImagePlaceholder from '../product/ProductImagePlaceholder';
+import { money } from '../../utils/money';
 
 interface CartItemProps {
   item: CartItemType;
@@ -13,11 +15,15 @@ const CartItem: React.FC<CartItemProps> = ({ item, updateQuantity, removeItem })
     <article className="bg-surface border border-line-soft rounded-card p-4 flex gap-4">
       {/* Image */}
       <div className="w-24 h-28 rounded-xl overflow-hidden bg-surface-2 shrink-0">
-        <img
-          src={item.item.main_image?.image || '/assets/images/cargo-pants.jpg'}
-          alt={item.item.name}
-          className="w-full h-full object-cover"
-        />
+        {item.item.main_image?.image ? (
+          <img
+            src={item.item.main_image.image}
+            alt={item.item.name}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <ProductImagePlaceholder label={item.item.name} />
+        )}
       </div>
 
       {/* Body */}
@@ -41,7 +47,7 @@ const CartItem: React.FC<CartItemProps> = ({ item, updateQuantity, removeItem })
         </div>
 
         <div className="flex items-end justify-between gap-3 mt-auto pt-3">
-          <span className="font-medium text-ink-1">Ksh {item.item.price}</span>
+          <span className="font-medium text-ink-1">{money(item.item.price)}</span>
           <div className="flex items-center bg-surface-3 rounded-full p-1">
             <button
               onClick={() => updateQuantity(item.item.id, item.quantity - 1)}

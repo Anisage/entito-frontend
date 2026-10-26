@@ -7,6 +7,7 @@ const ProductState: ProductState = {
     pagination: {},
     selectedProduct: null,
     loading: false,
+    detailLoading: false,
     error: null,
     total: 0
 }
@@ -84,15 +85,15 @@ const productsSlice = createSlice({
                 state.error = action.payload as string;
             })
             .addCase(fetchProductById.pending, (state) => {
-                state.loading = true;
+                state.detailLoading = true;
                 state.error = null;
             })
             .addCase(fetchProductById.fulfilled, (state, action) => {
-                state.loading = false;
+                state.detailLoading = false;
                 state.selectedProduct = action.payload;
             })
             .addCase(fetchProductById.rejected, (state, action) => {
-                state.loading = false;
+                state.detailLoading = false;
                 state.error = action.payload as string;
             })
     }
@@ -102,6 +103,7 @@ export const selectProducts = (state: { products: ProductState }) => state.produ
 export const selectTotalProducts = (state: { products: ProductState }) => state.products.total;
 export const selectedProduct = (state: { products: ProductState }) => state.products.selectedProduct
 export const selectIsLoading = (state: { products: ProductState }) => state.products.loading;
+export const selectDetailLoading = (state: { products: ProductState }) => state.products.detailLoading;
 export const selectError = (state: { products: ProductState }) => state.products.error;
 
 export const {} = productsSlice.actions;

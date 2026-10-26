@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Heart, ShoppingBag, Truck, Star, Check, RefreshCw, Sparkles } from 'lucide-react';
+import { Heart, ShoppingBag, Truck, Star, Check, RefreshCw } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import type { Product } from '../../types/product';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../../redux/slices/cartSlice';
@@ -34,7 +35,11 @@ const ProductDetails: React.FC<ProductDetailSectionProps> = ({ product }) => {
   const [selectedSize, setSelectedSize] = useState(sizes[0] || '');
   const [selectedColor, setSelectedColor] = useState(colors[0] || '');
   const dispatch = useDispatch();
-  const rating = product.rating || 4.6;
+  // Was `product.rating || 4.6`: any piece nobody has rated showed a
+  // solid 4.6 out of 5, invented. Show the stars only when there is
+  // something real behind them.
+  const rating = product.rating || 0;
+  const reviewCount = product.reviews?.length ?? 0;
 
   const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -63,15 +68,19 @@ const ProductDetails: React.FC<ProductDetailSectionProps> = ({ product }) => {
     <div className="space-y-7">
       <div className="flex items-center justify-between">
         <span className="chip">{product.category_name || 'ENTITO'}</span>
-        <div className="flex items-center gap-1.5 text-sm">
-          <div className="flex">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} size={14} className={starClass(i < Math.round(rating))} />
-            ))}
+        {reviewCount > 0 && (
+          <div className="flex items-center gap-1.5 text-sm">
+            <div className="flex">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} size={14} className={starClass(i < Math.round(rating))} />
+              ))}
+            </div>
+            <span className="text-ink-1 font-medium">{rating.toFixed(1)}</span>
+            <span className="text-ink-muted">
+              ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
+            </span>
           </div>
-          <span className="text-ink-1 font-medium">{rating.toFixed(1)}</span>
-          <span className="text-ink-muted">({product.reviews.length} reviews)</span>
-        </div>
+        )}
       </div>
 
       <h1 className="font-display text-4xl md:text-5xl text-ink-1 leading-tight">{product.name}</h1>
@@ -121,7 +130,7 @@ const ProductDetails: React.FC<ProductDetailSectionProps> = ({ product }) => {
         <div>
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-medium text-ink-1">Size</span>
-            <button className="text-xs text-ink-muted hover:text-ink-1 underline-offset-4 hover:underline">Size guide</button>
+            <Link to="/size-guide" className="text-xs text-ink-muted hover:text-ink-1 underline-offset-4 hover:underline">Size guide</Link>
           </div>
           <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
             {sizes.map((size) => {
@@ -136,16 +145,9 @@ const ProductDetails: React.FC<ProductDetailSectionProps> = ({ product }) => {
         </div>
       )}
 
-      <div className="flex items-center gap-3 bg-coral-soft/40 border border-coral-soft rounded-card p-4">
-        <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shrink-0">
-          <Sparkles size={16} className="text-coral" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-ink-1">Try this on, virtually</p>
-          <p className="text-xs text-ink-muted">Upload one selfie and see it on you in seconds.</p>
-        </div>
-        <button className="btn-pill btn-light text-xs px-4 py-2">Try it</button>
-      </div>
+      {/* A "Try this on, virtually - upload one selfie" banner sat here with
+          a Try it button that had no handler. The feature does not exist,
+          and it was promised at the exact moment she is deciding to buy. */}
 
       <div className="flex items-stretch gap-2 pt-2">
         <button onClick={handleAddToCart} className="flex-1 btn-pill btn-primary py-4 text-base">

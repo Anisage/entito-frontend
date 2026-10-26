@@ -33,7 +33,6 @@ const CartPage = () => {
   const deliveryFee = useSelector(cartDeliveryFee);
 
   const [selectAll, setSelectAll] = useState(false);
-  const [couponCode, setCouponCode] = useState('');
 
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity >= 1) {
@@ -136,8 +135,6 @@ const CartPage = () => {
               discountPercentage={discountPercentage}
               deliveryFee={deliveryFee}
               total={totalAmount}
-              couponCode={couponCode}
-              setCouponCode={setCouponCode}
             />
           </div>
         </div>

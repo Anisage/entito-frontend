@@ -23,12 +23,10 @@ const BrandStory = () => {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-24">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
         <div className="lg:col-span-7 rounded-card-lg overflow-hidden bg-ink-1 relative aspect-[4/3] lg:aspect-auto min-h-[420px]">
-          <img
-            src="/assets/images/cool-denim.jpg"
-            alt="Brand story"
-            className="absolute inset-0 w-full h-full object-cover opacity-90"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink-1/80 via-ink-1/10 to-transparent" />
+          {/* A stock photograph of denim stood here, captioned "Our craft"
+              as though it were Entito's workroom. Left as a plain panel
+              until there is a real photograph to put in it. */}
+          <div className="absolute inset-0 bg-gradient-to-t from-ink-1 via-ink-1/70 to-ink-1/40" />
           <div className="absolute bottom-8 left-8 right-8 text-white">
             <span className="chip bg-white/15 text-white border-white/20 mb-4">Our craft</span>
             <h3 className="font-display text-3xl md:text-4xl leading-tight max-w-md mt-3">

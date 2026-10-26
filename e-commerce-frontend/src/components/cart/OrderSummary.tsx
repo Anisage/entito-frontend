@@ -1,6 +1,7 @@
 import { ArrowRight, ShieldCheck } from 'lucide-react';
 import type React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { money } from '../../utils/money';
 
 interface OrderSummaryProps {
   subtotal: number;
@@ -8,8 +9,6 @@ interface OrderSummaryProps {
   discountPercentage: number;
   deliveryFee: number;
   total: number;
-  couponCode: string;
-  setCouponCode: (code: string) => void;
 }
 
 const OrderSummary: React.FC<OrderSummaryProps> = ({
@@ -18,57 +17,43 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({
   discountPercentage,
   deliveryFee,
   total,
-  couponCode,
-  setCouponCode,
 }) => {
   const navigate = useNavigate();
-
-  const applyCoupon = () => {
-    alert(`Applying coupon: ${couponCode}`);
-    setCouponCode('');
-  };
 
   return (
     <div className="bg-surface border border-line-soft rounded-card-lg p-6 sticky top-28">
       <h2 className="font-display text-2xl text-ink-1 mb-6">Order summary</h2>
 
-      {/* Coupon */}
-      <div className="flex items-center bg-surface-3 rounded-full p-1 mb-6">
-        <input
-          type="text"
-          placeholder="Coupon code"
-          value={couponCode}
-          onChange={(e) => setCouponCode(e.target.value)}
-          className="flex-1 px-4 py-2 text-sm bg-transparent focus:outline-none"
-        />
-        <button
-          onClick={applyCoupon}
-          className="btn-pill btn-primary text-xs px-5 py-2"
-        >
-          Apply
-        </button>
-      </div>
+      {/* A coupon box stood here. Typing a code and pressing Apply
+          popped a browser alert saying "Applying coupon: <code>" and
+          cleared the field - there are no coupons, in the UI or in the
+          backend, where `discount` is documented as always 0 until they
+          exist. Put it back alongside real ones. */}
 
       {/* Breakdown */}
       <div className="space-y-3 text-sm">
         <div className="flex justify-between">
           <span className="text-ink-muted">Subtotal</span>
-          <span className="text-ink-1">Ksh {subtotal.toLocaleString()}</span>
+          <span className="text-ink-1">{money(subtotal)}</span>
         </div>
         {discount > 0 && (
           <div className="flex justify-between">
             <span className="text-ink-muted">Discount ({discountPercentage}%)</span>
-            <span className="text-coral">- Ksh {discount.toLocaleString()}</span>
+            <span className="text-coral">- {money(discount)}</span>
           </div>
         )}
+        {/* The fee depends on the area she picks, which happens at
+            checkout. Showing "Ksh 0" here reads as free delivery. */}
         <div className="flex justify-between">
           <span className="text-ink-muted">Delivery</span>
-          <span className="text-ink-1">Ksh {deliveryFee.toLocaleString()}</span>
+          <span className="text-ink-1">
+            {deliveryFee > 0 ? money(deliveryFee) : 'Set at checkout'}
+          </span>
         </div>
         <div className="border-t border-line pt-4 flex justify-between items-baseline">
           <span className="font-medium text-ink-1">Total</span>
           <span className="font-display text-2xl text-ink-1">
-            Ksh {total.toLocaleString()}
+            {money(total)}
           </span>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Expand } from 'lucide-react';
 import type { Image } from '../../types/product';
+import ProductImagePlaceholder from '../product/ProductImagePlaceholder';
 
 interface ProductImagesProps {
   productImages: Image[] | [];
@@ -8,11 +9,19 @@ interface ProductImagesProps {
 
 const ProductImages: React.FC<ProductImagesProps> = ({ productImages }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const images = productImages.length > 0
-    ? productImages
-    : [{ id: 0, image: '/assets/images/cool-denim.jpg', is_main: true, product: 0 }];
-
+  // A piece with no photography used to fall back to a stock shot of a
+  // denim jacket on a male model, shown full-size as though it were the
+  // garment. Now the well is simply empty and says so.
+  const images = productImages;
   const active = images[activeIndex] || images[0];
+
+  if (images.length === 0) {
+    return (
+      <div className="bg-surface-2 rounded-card-lg overflow-hidden aspect-[4/5]">
+        <ProductImagePlaceholder />
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[88px_1fr] gap-4">

@@ -63,7 +63,19 @@ export interface ProductState {
     products: Product[];
     pagination: Pagination | {};
     selectedProduct: Product | null;
+    /** The catalogue list is loading. */
     loading: boolean;
+    /**
+     * One product is loading.
+     *
+     * Separate from `loading` on purpose. Both fetches used to share a
+     * single flag, so any list fetch blanked the product page that was
+     * already on screen - and once the page had a child that fetched a
+     * list ("Pair it with"), the two deadlocked: the child mounted, asked
+     * for products, which set loading, which unmounted the child, which
+     * cleared loading, which mounted it again, for ever.
+     */
+    detailLoading: boolean;
     error: string | null;
     total: number;
 }

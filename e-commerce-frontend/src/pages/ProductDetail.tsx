@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchProductById,
   selectedProduct,
-  selectIsLoading,
+  selectDetailLoading,
 } from '../redux/slices/productsSlice';
 import type { AppDispatch } from '../redux/store';
 
@@ -18,7 +18,7 @@ const ProductDetail = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const product = useSelector(selectedProduct);
-  const loading = useSelector(selectIsLoading);
+  const loading = useSelector(selectDetailLoading);
   const productImages = product?.product_images || [];
 
   useEffect(() => {
@@ -64,7 +64,10 @@ const ProductDetail = () => {
         <ProductTabs product={product} />
 
         {/* Related */}
-        <RelatedProductsCarousel />
+        <RelatedProductsCarousel
+          currentProductId={product.id}
+          categoryName={product.category_name}
+        />
       </section>
     </div>
   );
