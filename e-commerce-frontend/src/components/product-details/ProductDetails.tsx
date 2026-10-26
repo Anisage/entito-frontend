@@ -3,6 +3,7 @@ import { Heart, ShoppingBag, Truck, Star, Check, RefreshCw, Sparkles } from 'luc
 import type { Product } from '../../types/product';
 import { useDispatch } from 'react-redux';
 import { addItemToCart } from '../../redux/slices/cartSlice';
+import { money } from '../../utils/money';
 
 interface ProductDetailSectionProps {
   product: Product;
@@ -80,10 +81,10 @@ const ProductDetails: React.FC<ProductDetailSectionProps> = ({ product }) => {
       </p>
 
       <div className="flex items-baseline gap-3 pt-1">
-        <span className="font-display text-4xl text-ink-1">Ksh {product.price}</span>
+        <span className="font-display text-4xl text-ink-1">{money(product.price)}</span>
         {product.original_price && (
           <>
-            <span className="text-ink-muted line-through text-lg">Ksh {product.original_price}</span>
+            <span className="text-ink-muted line-through text-lg">{money(product.original_price)}</span>
             {product.discount_percentage && (
               <span className="chip bg-coral-soft text-coral border-transparent">Save {product.discount_percentage}%</span>
             )}
@@ -159,7 +160,9 @@ const ProductDetails: React.FC<ProductDetailSectionProps> = ({ product }) => {
       <div className="grid grid-cols-2 gap-3 pt-2">
         <div className="flex items-center gap-3 text-sm">
           <Truck size={16} className="text-ink-muted" />
-          <span className="text-ink-muted">Free delivery over Ksh 5,000</span>
+          {/* There is no free-delivery threshold: delivery is priced per area,
+              and the fee is shown at checkout once she picks hers. */}
+          <span className="text-ink-muted">Delivery priced by area</span>
         </div>
         <div className="flex items-center gap-3 text-sm">
           <RefreshCw size={16} className="text-ink-muted" />

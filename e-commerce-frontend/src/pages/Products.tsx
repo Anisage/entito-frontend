@@ -10,7 +10,7 @@ import {
   selectIsLoading,
 } from "../redux/slices/productsSlice";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ChevronDown, Grid3X3, List, SlidersHorizontal } from "lucide-react";
 
 const Products = () => {
@@ -19,7 +19,11 @@ const Products = () => {
   const totalProducts = useSelector(selectTotalProducts);
   const loading = useSelector(selectIsLoading);
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const categoryName = searchParams.get("category-name");
+  // Set by the header search box. The API already searches across name,
+  // description and category - nothing was passing a term to it.
+  const search = searchParams.get("search")?.trim() || undefined;
   const [minPrice, setMinPrice] = useState<number | undefined>();
   const [maxPrice, setMaxPrice] = useState<number | undefined>();
   const [sizeFilter, setSizeFilter] = useState<string | undefined>();
@@ -28,10 +32,15 @@ const Products = () => {
   const [categoryFilter, setCategoryFilter] = useState<string | undefined>();
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  // Values the API accepts verbatim; "" means the server default, which
+  // is newest first (Product.Meta.ordering).
+  const [ordering, setOrdering] = useState("");
 
   useEffect(() => {
     if (
       categoryName ||
+      search ||
+      ordering ||
       minPrice ||
       maxPrice ||
       sizeFilter ||
@@ -42,6 +51,8 @@ const Products = () => {
       dispatch(
         fetchProducts({
           category: categoryName?.toLowerCase(),
+          search,
+          ordering: ordering || undefined,
           minPrice,
           maxPrice,
           sizeFilter,
@@ -56,6 +67,8 @@ const Products = () => {
   }, [
     dispatch,
     categoryName,
+    search,
+    ordering,
     minPrice,
     maxPrice,
     sizeFilter,
@@ -79,7 +92,7 @@ const Products = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6">
         <div className="bg-surface-2 rounded-card-lg p-8 md:p-12">
           <nav className="text-xs text-ink-muted mb-4 flex items-center gap-2">
-            <a href="/" className="hover:text-ink-1">Home</a>
+            <Link to="/" className="hover:text-ink-1">Home</Link>
             <span>/</span>
             <span className="text-ink-1">Shop</span>
             {categoryName && (
@@ -88,9 +101,22 @@ const Products = () => {
                 <span className="text-ink-1 capitalize">{categoryName}</span>
               </>
             )}
+            {search && (
+              <>
+                <span>/</span>
+                <span className="text-ink-1">Search</span>
+              </>
+            )}
           </nav>
           <h1 className="font-display text-5xl md:text-6xl text-ink-1 leading-tight">
-            {categoryName ? (
+            {search ? (
+              <>
+                &ldquo;{search}&rdquo;
+                <span className="block text-ink-muted text-3xl mt-2 font-sans font-normal">
+                  {products.length === 1 ? '1 piece' : `${products.length} pieces`} matched
+                </span>
+              </>
+            ) : categoryName ? (
               <>
                 {categoryName}
                 <span className="block text-ink-muted text-3xl mt-2 font-sans font-normal">
@@ -103,11 +129,15 @@ const Products = () => {
               </>
             )}
           </h1>
-          <p className="text-ink-muted mt-4 max-w-md">
-            {totalProducts > 0
-              ? `${totalProducts} pieces available — refreshed weekly with new arrivals.`
-              : "Browse our latest pieces, refreshed every week."}
-          </p>
+          {/* The search heading already states how many matched, so this
+              line would only repeat it - and it said "1 pieces". */}
+          {!search && (
+            <p className="text-ink-muted mt-4 max-w-md">
+              {totalProducts > 0
+                ? `${totalProducts} ${totalProducts === 1 ? 'piece' : 'pieces'} available — refreshed weekly with new arrivals.`
+                : "Browse our latest pieces, refreshed every week."}
+            </p>
+          )}
         </div>
       </section>
 
@@ -171,10 +201,27 @@ const Products = () => {
                   </button>
                 </div>
 
-                <button className="btn-pill btn-ghost">
-                  Sort by: Newest
-                  <ChevronDown size={14} />
-                </button>
+                {/* This was a button with no handler - it looked like a
+                    control and could never sort anything. The API has
+                    accepted `ordering` all along. */}
+                <div className="relative">
+                  <label htmlFor="sort-by" className="sr-only">Sort by</label>
+                  <select
+                    id="sort-by"
+                    value={ordering}
+                    onChange={(e) => setOrdering(e.target.value)}
+                    className="btn-pill btn-ghost appearance-none pr-9 cursor-pointer"
+                  >
+                    <option value="">Sort by: Newest</option>
+                    <option value="price">Price: low to high</option>
+                    <option value="-price">Price: high to low</option>
+                    <option value="name">Name: A to Z</option>
+                  </select>
+                  <ChevronDown
+                    size={14}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-ink-muted"
+                  />
+                </div>
               </div>
             </div>
 
@@ -191,12 +238,22 @@ const Products = () => {
             ) : products.length < 1 ? (
               <div className="bg-surface border border-line-soft rounded-card-lg py-20 text-center">
                 <p className="font-display text-3xl text-ink-1">No matches yet</p>
-                <p className="text-ink-muted mt-2">Try clearing a filter or two.</p>
+                <p className="text-ink-muted mt-2">
+                  {search
+                    ? <>Nothing in the collection matches &ldquo;{search}&rdquo;.</>
+                    : 'Try clearing a filter or two.'}
+                </p>
                 <button
-                  onClick={handleClearFilters}
+                  onClick={() => {
+                    handleClearFilters();
+                    // Search and category live in the URL, so clearing the
+                    // component's filters alone would leave the shopper
+                    // staring at the same empty page.
+                    if (search || categoryName) navigate('/products');
+                  }}
                   className="btn-pill btn-primary mt-6 mx-auto"
                 >
-                  Clear filters
+                  {search || categoryName ? 'Show everything' : 'Clear filters'}
                 </button>
               </div>
             ) : (

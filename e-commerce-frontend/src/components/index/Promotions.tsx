@@ -1,25 +1,35 @@
-import { Star, Truck, RefreshCw, Leaf } from 'lucide-react';
+import { Scissors, Truck, RefreshCw, ShieldCheck } from 'lucide-react';
 
+/**
+ * Four things a shopper should know before she buys. Each one has to be
+ * true, because this sits directly above the products.
+ *
+ * Two were not. "4.8/5 rating, based on 2,340+ reviews" was invented - the
+ * shop has no reviews at all - and "Free delivery on orders over Ksh 5,000"
+ * contradicts checkout, where delivery is priced by area with no free
+ * threshold. "Ethically made / small-batch & sustainable" went too: it is a
+ * claim about Entito's supply chain that nobody here can stand behind.
+ */
 const items = [
   {
-    icon: Star,
-    title: '4.8/5 rating',
-    sub: 'Based on 2,340+ reviews',
+    icon: Scissors,
+    title: "Entito's own line",
+    sub: 'Designed and made by us',
   },
   {
     icon: Truck,
-    title: 'Free delivery',
-    sub: 'On orders over Ksh 5,000',
+    title: 'Countrywide delivery',
+    sub: 'Priced by area, shown at checkout',
   },
   {
     icon: RefreshCw,
     title: '7-day returns',
-    sub: 'Try at home, return free',
+    sub: 'Unworn, with tags attached',
   },
   {
-    icon: Leaf,
-    title: 'Ethically made',
-    sub: 'Small-batch & sustainable',
+    icon: ShieldCheck,
+    title: 'Pay on confirmation',
+    sub: "We'll be in touch to arrange it",
   },
 ];
 

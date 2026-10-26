@@ -1,32 +1,66 @@
-import { Search, ShoppingBag, Heart, User, ChevronDown, Menu } from 'lucide-react';
+import { Search, ShoppingBag, Heart, User, Menu } from 'lucide-react';
 import { useAuth } from '../../auth/AuthProvider';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../../redux/store';
 import { fetchCategories, selectedCategories } from '../../redux/slices/categorySlice';
 import { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
 import { cartItemsCount } from '../../redux/slices/cartSlice';
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
   const wishlistCount = useSelector((state: RootState) => state.wishlist.items.length);
-  const params = new URLSearchParams(window.location.search);
-  const type = params.get('category-name');
   const categories = useSelector(selectedCategories);
   const cartItems = useSelector(cartItemsCount);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [query, setQuery] = useState('');
+
+  // Read the current category from the router, not from `window.location`.
+  // The old code captured window.location.search during render, which is a
+  // value React knows nothing about: it did not necessarily reflect the page
+  // being rendered, and nothing re-read it when the route changed.
+  const params = new URLSearchParams(location.search);
+  const type = params.get('category-name');
+
+  // "New In" means "the catalogue, unfiltered" - so it can only be the
+  // current selection while we are actually on the catalogue. Previously it
+  // highlighted whenever there was no category in the URL, which is true of
+  // the cart, the wishlist, visual search and every other page on the site.
+  const onCatalogue = location.pathname === '/products';
+  const newInSelected = onCatalogue && !type && !params.get('search');
 
   useEffect(() => {
     dispatch(fetchCategories() as any);
   }, [dispatch]);
 
+  // Keep the box showing what the results are actually filtered by, including
+  // when the shopper arrives from a link or presses back.
+  useEffect(() => {
+    setQuery(onCatalogue ? (params.get('search') ?? '') : '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search, location.pathname]);
+
+  const submitSearch = (event: FormEvent) => {
+    event.preventDefault();
+    const term = query.trim();
+    // An empty box means "show me everything", not "search for nothing".
+    navigate(term ? `/products?search=${encodeURIComponent(term)}` : '/products');
+    setMobileOpen(false);
+  };
+
   const navLinks = [
     { label: 'Shop', to: '/products' },
+    { label: 'Lookbook', to: '/lookbook' },
     { label: 'Wishlist', to: '/wishlist' },
     { label: 'Recently viewed', to: '/recent-views' },
   ];
+
+  const searchInputClass =
+    'w-full pl-11 pr-4 py-3 text-sm bg-surface border border-line rounded-full focus:outline-none focus:border-ink-1 transition-colors';
 
   return (
     <header className="bg-page sticky top-0 z-40 border-b border-line">
@@ -67,16 +101,20 @@ const Header = () => {
         </nav>
 
         {/* Search */}
-        <div className="hidden md:flex flex-1 max-w-md ml-auto">
+        <form onSubmit={submitSearch} role="search" className="hidden md:flex flex-1 max-w-md ml-auto">
           <div className="relative w-full">
             <input
-              type="text"
+              id="site-search"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder="Search dresses, tops, sizes…"
-              className="w-full pl-11 pr-4 py-3 text-sm bg-surface border border-line rounded-full focus:outline-none focus:border-ink-1 transition-colors"
+              aria-label="Search the collection"
+              className={searchInputClass}
             />
             <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-muted" />
           </div>
-        </div>
+        </form>
 
         {/* Icons */}
         <div className="flex items-center gap-2 md:gap-1">
@@ -90,7 +128,7 @@ const Header = () => {
               className={wishlistCount > 0 ? 'text-coral fill-coral' : 'text-ink-1'}
             />
             {wishlistCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-coral text-white text-[10px] font-medium w-4.5 h-4.5 min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center">
+              <span className="absolute -top-0.5 -right-0.5 bg-coral text-white text-[10px] font-medium min-w-[18px] h-[18px] px-1 rounded-full flex items-center justify-center">
                 {wishlistCount}
               </span>
             )}
@@ -120,6 +158,7 @@ const Header = () => {
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="lg:hidden w-11 h-11 flex items-center justify-center rounded-full hover:bg-surface-3"
+            aria-expanded={mobileOpen}
             aria-label="Menu"
           >
             <Menu size={20} />
@@ -130,20 +169,21 @@ const Header = () => {
       {/* Category nav (desktop) */}
       <div className="hidden lg:block max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
         <div className="flex items-center gap-3 overflow-x-auto scrollbar-none">
-          <div className="flex items-center gap-2 chip">
-            <span>All Categories</span>
-            <ChevronDown size={14} />
-          </div>
+          {/* There was an "All Categories" chip with a dropdown arrow here.
+              It was a plain <div> - not a button, no menu, no handler - so it
+              could never do anything. "New In" beside it already is the
+              unfiltered view, which is what a working version would have
+              shown. */}
           <button
             onClick={() => navigate('/products')}
-            className={`chip ${!type ? 'chip-dark' : ''}`}
+            className={`chip ${newInSelected ? 'chip-dark' : ''}`}
           >
             New In
           </button>
-          {categories.map((category, index) => (
+          {categories.map((category) => (
             <button
-              key={index}
-              onClick={() => navigate(`/products?category-name=${category.name}`)}
+              key={category.id}
+              onClick={() => navigate(`/products?category-name=${encodeURIComponent(category.name)}`)}
               className={`chip ${type === category.name ? 'chip-dark' : ''}`}
             >
               {category.name}
@@ -156,14 +196,20 @@ const Header = () => {
       {mobileOpen && (
         <div className="lg:hidden border-t border-line bg-page">
           <div className="px-4 py-4 space-y-3">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search"
-                className="w-full pl-11 pr-4 py-3 text-sm bg-surface border border-line rounded-full focus:outline-none focus:border-ink-1"
-              />
-              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-muted" />
-            </div>
+            <form onSubmit={submitSearch} role="search">
+              <div className="relative">
+                <input
+                  id="site-search-mobile"
+                  type="search"
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search the collection"
+                  aria-label="Search the collection"
+                  className={searchInputClass}
+                />
+                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink-muted" />
+              </div>
+            </form>
             {navLinks.map((link) => (
               <button
                 key={link.to}
@@ -176,12 +222,32 @@ const Header = () => {
                 {link.label}
               </button>
             ))}
+            {/* The account icon in the bar above is hidden below md, so
+                without this there is no way to sign in on a phone at all. */}
+            <button
+              onClick={() => {
+                navigate(user ? '/account' : '/login');
+                setMobileOpen(false);
+              }}
+              className="w-full text-left px-4 py-3 text-sm text-ink-1 hover:bg-surface-3 rounded-2xl"
+            >
+              {user ? 'Your account' : 'Sign in'}
+            </button>
             <div className="flex flex-wrap gap-2 pt-2 border-t border-line">
-              {categories.map((category, index) => (
+              <button
+                onClick={() => {
+                  navigate('/products');
+                  setMobileOpen(false);
+                }}
+                className={`chip ${newInSelected ? 'chip-dark' : ''}`}
+              >
+                New In
+              </button>
+              {categories.map((category) => (
                 <button
-                  key={index}
+                  key={category.id}
                   onClick={() => {
-                    navigate(`/products?category-name=${category.name}`);
+                    navigate(`/products?category-name=${encodeURIComponent(category.name)}`);
                     setMobileOpen(false);
                   }}
                   className={`chip ${type === category.name ? 'chip-dark' : ''}`}

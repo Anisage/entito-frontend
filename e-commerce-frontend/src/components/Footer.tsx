@@ -16,12 +16,18 @@ const Footer = () => {
   const columns: FooterColumn[] = [
     {
       title: "Shop",
+      // Entito sells one thing: its own ladies' clothing. There was a "Men"
+      // link here, and a "Women" one that only made sense next to it.
+      //
+      // The rest pointed at categories that do not exist - the real ones are
+      // Dresses, Tops & Blouses and so on, loaded from the database - so
+      // "New Arrivals" and "Sale" both led to an empty page. Everything
+      // below goes somewhere real.
       links: [
-        { label: "Women", to: "/products?category-name=women" },
-        { label: "Men", to: "/products?category-name=men" },
-        { label: "New Arrivals", to: "/products?category-name=new-arrivals" },
-        { label: "Sale", to: "/products?category-name=sale" },
+        { label: "All pieces", to: "/products" },
         { label: "Lookbook", to: "/lookbook" },
+        { label: "Wishlist", to: "/wishlist" },
+        { label: "Recently viewed", to: "/recent-views" },
       ],
     },
     {
@@ -63,8 +69,11 @@ const Footer = () => {
               <span className="font-display text-5xl text-white/40">TO</span>
             </Link>
             <p className="text-sm text-white/60 max-w-xs leading-relaxed">
-              Modern wardrobe staples, made to last. Try-on at home, M-Pesa
-              checkout, and same-day boda delivery across Nairobi.
+              {/* M-Pesa checkout is not connected, and same-day does not
+                  reach beyond Nairobi - both were promises the shop would
+                  have had to break. */}
+              Modern wardrobe staples for women, made to last. Delivered
+              countrywide, priced by area.
             </p>
             <div className="flex items-center gap-3 text-white/70">
               <a href="#" aria-label="Twitter" className="w-10 h-10 rounded-full border border-white/15 hover:border-white/40 flex items-center justify-center transition-colors"><FaTwitter size={14} /></a>

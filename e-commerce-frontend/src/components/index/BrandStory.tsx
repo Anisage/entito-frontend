@@ -1,6 +1,24 @@
 import { ArrowUpRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+/*
+ * Entito's story, as told on the homepage.
+ *
+ * Everything specific that stood here was invented: "Est. 2020",
+ * "small-batch and ethically produced in Nairobi", "sustainable fabric",
+ * and three figures - 120+ styles in season, an average customer score of
+ * 5 (from no reviews at all), and 48-hour Nairobi delivery. None of it came
+ * from Entito.
+ *
+ * Rather than swap in different invented copy, the specifics are marked as
+ * blanks for Babu to fill. A placeholder that announces itself is honest;
+ * a confident wrong fact is not, and these are the kind nobody re-reads
+ * once they look plausible.
+ */
 
 const BrandStory = () => {
+  const navigate = useNavigate();
+
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-24">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
@@ -21,31 +39,27 @@ const BrandStory = () => {
 
         <div className="lg:col-span-5 flex flex-col justify-between bg-surface-2 rounded-card-lg p-8 md:p-10">
           <div>
-            <span className="chip mb-4">Est. 2020</span>
-            <h2 className="font-display text-4xl text-ink-1 leading-tight mt-2">
+            <h2 className="font-display text-4xl text-ink-1 leading-tight">
               Built to last, made to move
             </h2>
             <p className="text-ink-muted leading-relaxed mt-6">
-              Entito is small-batch and ethically produced in Nairobi. Every piece starts with sustainable fabric and ends in a wardrobe that gets better with time.
+              Entito designs and makes its own womenswear — considered
+              pieces, cut to be worn and worn again.
+            </p>
+            <p className="text-ink-muted leading-relaxed mt-4 text-sm italic">
+              [Entito&rsquo;s founding story goes here.]
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-6 mt-10">
-            <div>
-              <p className="font-display text-3xl text-ink-1">120+</p>
-              <p className="text-xs text-ink-muted mt-1">Styles in season</p>
-            </div>
-            <div>
-              <p className="font-display text-3xl text-ink-1">5</p>
-              <p className="text-xs text-ink-muted mt-1">Avg. customer score</p>
-            </div>
-            <div>
-              <p className="font-display text-3xl text-ink-1">48h</p>
-              <p className="text-xs text-ink-muted mt-1">Nairobi delivery</p>
-            </div>
+          {/* The three figures that sat here were made up. Put real ones
+              back when there are real ones to put. */}
+          <div className="mt-10">
           </div>
 
-          <button className="btn-pill btn-primary mt-8 self-start">
+          <button
+            onClick={() => navigate('/about')}
+            className="btn-pill btn-primary mt-8 self-start"
+          >
             Read our story
             <ArrowUpRight size={14} />
           </button>

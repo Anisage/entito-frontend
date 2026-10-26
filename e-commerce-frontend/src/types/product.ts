@@ -40,6 +40,10 @@ export interface Product {
 }
 
 export interface Category {
+    // The API serialises ProductCategory with fields = '__all__', so the id
+    // has always been in the payload - it was simply missing from this type,
+    // which forced callers to key React lists by array index.
+    id: number,
     name: string,
     description: string,
 }

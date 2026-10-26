@@ -18,11 +18,9 @@ export const fetchProducts = createAsyncThunk(
         page?: number; pageSize?: number; limit?: number; 
         category?: string; search?: string; minPrice?: number; 
         maxPrice?: number; sizeFilter?: string; colorFilter?: string; 
-        ratingsFilter?: number; categoryFilter?: string;
+        ratingsFilter?: number; categoryFilter?: string; ordering?: string;
     } = {}, { rejectWithValue }) => {
         try {
-            console.log('Fetching products');
-            
             const query = new URLSearchParams();
             if (params.page) query.append('page', params.page.toString());
             if (params.pageSize) query.append('page_size', params.pageSize.toString());
@@ -35,6 +33,7 @@ export const fetchProducts = createAsyncThunk(
             if (params.colorFilter) query.append('color', params.colorFilter.toString());
             if (params.ratingsFilter) query.append('rating', params.ratingsFilter.toString());
             if (params.categoryFilter) query.append('category_name', params.categoryFilter.toString());
+            if (params.ordering) query.append('ordering', params.ordering);
 
             const queryString = query.toString();
             const url = queryString ? `/products?${queryString}` : '/products';
@@ -42,8 +41,6 @@ export const fetchProducts = createAsyncThunk(
             const response = await get<ProductsResponse>(url);
             return response;
         } catch (error: any) {
-            console.log('Error fetching products:', error);
-            
             return rejectWithValue(
                 error.response?.data?.message || 'Failed to fetch products'
             )

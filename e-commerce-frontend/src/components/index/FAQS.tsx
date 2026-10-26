@@ -4,22 +4,34 @@ import FAQItem from './FAQItem';
 const FAQS = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
+  // Answers a customer will hold Entito to, so each one has to match what
+  // the shop actually does.
+  //
+  // What was here promised free Nairobi returns, same-day delivery before
+  // 1pm, and shipping across East Africa with tariffs calculated at
+  // checkout - none of which exists; delivery is Kenya-only, by zone. The
+  // fourth answered "How does the AI try-on work?", from the hair
+  // business this codebase began as.
   const faqs = [
     {
+      question: 'How do I pay?',
+      answer:
+        "Online payment isn't switched on yet. Place your order and we'll contact you to arrange payment and confirm delivery before anything ships.",
+    },
+    {
+      question: 'How much is delivery?',
+      answer:
+        'It depends where you are. Pick your area at checkout and the fee is shown before you place the order — nothing is added afterwards.',
+    },
+    {
       question: "What's your return policy?",
-      answer: 'We offer a 7-day try-at-home window for all items. Items must be in original condition with tags attached. Returns within Nairobi are free.',
+      answer:
+        'Seven days from delivery, for pieces that are unworn and still have their tags attached.',
     },
     {
-      question: 'How long does delivery take?',
-      answer: 'Same-day delivery is available across Nairobi for orders placed before 1pm. Express country-wide delivery takes 2 to 3 working days.',
-    },
-    {
-      question: 'Do you offer international shipping?',
-      answer: 'Yes, we ship across East Africa with a 5 to 7 day window. International rates and tariffs are calculated at checkout.',
-    },
-    {
-      question: 'How does the AI try-on work?',
-      answer: 'Upload one selfie and we render the item on you in seconds. Try as many looks as you like, no measurements needed.',
+      question: 'What sizes do you carry?',
+      answer:
+        'XS to XL, varying by piece. Every product page lists the sizes available for that garment, and the size guide has the measurements.',
     },
   ];
 
@@ -32,7 +44,9 @@ const FAQS = () => {
             Questions, answered
           </h2>
           <p className="text-ink-muted mt-6 leading-relaxed max-w-sm">
-            Still curious? Reach us on WhatsApp at +254 700 000 000 and we will get back the same day.
+            {/* +254 700 000 000 is not a real number. Put Entito's own
+                here - an unanswered contact line is worse than none. */}
+            Still curious? Get in touch and we&rsquo;ll come back to you.
           </p>
         </div>
         <div className="lg:col-span-7">

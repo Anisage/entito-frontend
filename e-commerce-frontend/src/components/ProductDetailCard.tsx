@@ -6,6 +6,8 @@ import WishlistButton from './wishlist/WishlistButton';
 import { useDispatch } from 'react-redux';
 import type { AppDispatch } from '../redux/store';
 import { addItemToCart } from '../redux/slices/cartSlice';
+import ProductImagePlaceholder from './product/ProductImagePlaceholder';
+import { money } from '../utils/money';
 
 interface ProductDetailCardProps {
   product: Product;
@@ -37,11 +39,15 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ product }) => {
     >
       {/* Image well */}
       <div className="relative aspect-[4/5] rounded-card overflow-hidden bg-surface-2">
-        <img
-          src={product.main_image?.image || '/assets/images/cargo-pants.jpg'}
-          alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+        {product.main_image?.image ? (
+          <img
+            src={product.main_image.image}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <ProductImagePlaceholder label={product.name} />
+        )}
 
         {/* Top-left tag */}
         {hasDiscount ? (
@@ -84,11 +90,11 @@ const ProductDetailCard: React.FC<ProductDetailCardProps> = ({ product }) => {
           </h3>
           <div className="flex flex-col items-end shrink-0">
             <span className="text-ink-1 font-medium text-[15px] whitespace-nowrap">
-              Ksh {product.price}
+              {money(product.price)}
             </span>
             {hasDiscount && (
               <span className="text-ink-muted text-xs line-through">
-                Ksh {product.original_price}
+                {money(product.original_price)}
               </span>
             )}
           </div>

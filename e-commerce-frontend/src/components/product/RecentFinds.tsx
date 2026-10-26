@@ -12,6 +12,8 @@ import {
 } from '../../redux/slices/recentViewsSlice';
 import type { AppDispatch } from '../../redux/store';
 import { addItemToCart } from '../../redux/slices/cartSlice';
+import ProductImagePlaceholder from './ProductImagePlaceholder';
+import { money } from '../../utils/money';
 
 interface RecentFindsItemProps {
   product: Product;
@@ -44,11 +46,15 @@ export const RecentFindsCard: React.FC<RecentFindsItemProps> = ({ product }) => 
       className="group cursor-pointer"
     >
       <div className="relative aspect-[4/5] rounded-card overflow-hidden bg-surface-2">
-        <img
-          src={product.main_image?.image || '/assets/images/cargo-pants.jpg'}
-          alt={product.name}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+        {product.main_image?.image ? (
+          <img
+            src={product.main_image.image}
+            alt={product.name}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <ProductImagePlaceholder label={product.name} />
+        )}
 
         <div className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/95 backdrop-blur flex items-center justify-center">
           <WishlistButton item={product} size={14} className="" />
@@ -69,7 +75,7 @@ export const RecentFindsCard: React.FC<RecentFindsItemProps> = ({ product }) => 
             {product.name}
           </h3>
           <span className="font-medium text-ink-1 text-[15px] whitespace-nowrap">
-            Ksh {product.price}
+            {money(product.price)}
           </span>
         </div>
         <div className="flex items-center justify-between mt-1">

@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { removeFromWishlist } from '../../redux/store/wishlistSlice';
 import type { WishlistItem } from '../../types/wishlist';
+import ProductImagePlaceholder from '../product/ProductImagePlaceholder';
+import { money } from '../../utils/money';
 
 interface WishlistCardProps {
   item: WishlistItem;
@@ -28,11 +30,15 @@ const WishlistCard: React.FC<WishlistCardProps> = ({ item }) => {
   return (
     <article className="group relative cursor-pointer" onClick={() => navigate(`/product/${item.id}`)}>
       <div className="relative aspect-[4/5] rounded-card overflow-hidden bg-surface-2">
-        <img
-          src={item.main_image?.image || '/assets/images/cargo-pants.jpg'}
-          alt={item.name}
-          className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+        {item.main_image?.image ? (
+          <img
+            src={item.main_image.image}
+            alt={item.name}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <ProductImagePlaceholder label={item.name} />
+        )}
 
         {discountPercentage > 0 && (
           <span className="absolute top-3 left-3 px-3 py-1.5 rounded-full bg-coral text-white text-[11px] font-medium">
@@ -78,10 +84,10 @@ const WishlistCard: React.FC<WishlistCardProps> = ({ item }) => {
         </p>
         <div className="flex items-center justify-between mt-3">
           <div className="flex items-baseline gap-2">
-            <span className="font-medium text-ink-1">Ksh {item.price}</span>
+            <span className="font-medium text-ink-1">{money(item.price)}</span>
             {item.original_price && Number(item.original_price) > Number(item.price) && (
               <span className="text-xs text-ink-muted line-through">
-                Ksh {item.original_price}
+                {money(item.original_price)}
               </span>
             )}
           </div>

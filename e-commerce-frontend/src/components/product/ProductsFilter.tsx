@@ -3,6 +3,7 @@ import React from 'react';
 import Slider from '@mui/material/Slider';
 import { useSelector } from 'react-redux';
 import { selectedCategories } from '../../redux/slices/categorySlice';
+import { money } from '../../utils/money';
 
 interface ProductFilterProps {
   minPrice?: number;
@@ -39,9 +40,19 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
   </div>
 );
 
+/**
+ * Top of the price slider, in KSh.
+ *
+ * This was 500 - below the cheapest thing Entito sells, so dragging the
+ * slider could only ever return nothing. Keep it comfortably above the most
+ * expensive piece; sitting at the ceiling means "no upper limit", which is
+ * why `activeFiltersCount` does not count it as a filter.
+ */
+const PRICE_CEILING = 20000;
+
 const ProductsFilter: React.FC<ProductFilterProps> = ({
   minPrice = 0,
-  maxPrice = 500,
+  maxPrice = PRICE_CEILING,
   onPriceRangeChange,
   sizeFilter,
   onSizeChange,
@@ -54,7 +65,7 @@ const ProductsFilter: React.FC<ProductFilterProps> = ({
 }) => {
   const activeFiltersCount = [
     minPrice && minPrice > 0,
-    maxPrice && maxPrice < 500,
+    maxPrice && maxPrice < PRICE_CEILING,
     sizeFilter,
     colorFilter,
     ratingsFilter,
@@ -104,8 +115,8 @@ const ProductsFilter: React.FC<ProductFilterProps> = ({
 
       <Section title="Price range">
         <div className="flex justify-between text-xs text-ink-muted mb-3">
-          <span>Ksh {minPrice}</span>
-          <span>Ksh {maxPrice}</span>
+          <span>{money(minPrice)}</span>
+          <span>{maxPrice >= PRICE_CEILING ? `${money(PRICE_CEILING)}+` : money(maxPrice)}</span>
         </div>
         <Slider
           value={[minPrice, maxPrice]}
@@ -117,8 +128,8 @@ const ProductsFilter: React.FC<ProductFilterProps> = ({
           }
           valueLabelDisplay="auto"
           min={0}
-          max={500}
-          step={10}
+          max={PRICE_CEILING}
+          step={500}
           sx={{
             color: '#0f1419',
             '& .MuiSlider-thumb': {
