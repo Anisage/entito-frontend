@@ -1,24 +1,29 @@
 import { Link } from "react-router-dom";
-import { Sparkles, Heart, Globe, ArrowUpRight } from "lucide-react";
+import { Scissors, Heart, Globe, ArrowUpRight } from "lucide-react";
 
+// "Try-on first" described previewing wigs, weaves and frames on your own
+// face - the business this codebase began as. "Made for here" promised
+// M-Pesa at checkout and same-day boda across Nairobi, neither of which the
+// shop does. "Honest sourcing" claimed Entito publishes who made each piece
+// and where, on every product page; it does not.
 const PILLARS = [
   {
-    icon: Sparkles,
-    title: "Try-on first",
+    icon: Scissors,
+    title: "One label, start to finish",
     body:
-      "Every wig, weave, and frame we sell can be previewed on your own face before checkout. No more guessing from a flat-lay.",
+      "Entito designs and makes its own pieces. Nothing here is another brand's, and nothing is resold.",
   },
   {
     icon: Heart,
     title: "Made for here",
     body:
-      "Pricing in KSh, M-Pesa at checkout, and same-day boda delivery across Nairobi. Built for the way Kenya actually shops.",
+      "Priced in shillings, cut for Kenyan weather and Kenyan wardrobes, delivered across the country.",
   },
   {
     icon: Globe,
-    title: "Honest sourcing",
+    title: "Bought with a person, not a form",
     body:
-      "We work directly with small ateliers and verified suppliers — and we share who made what, where, on every product page.",
+      "Place an order and we speak to you directly to arrange payment and delivery. Slower than a card, and nobody is left guessing.",
   },
 ];
 
@@ -81,10 +86,12 @@ const AboutUs = () => {
               wrong in person. We keep our range small on purpose, so every piece earns
               its place.
             </p>
+            {/* This described a selfie try-on feature and M-Pesa checkout,
+                neither of which exists. */}
             <p>
-              So we built the try-on layer first, then the storefront around it. Drop a
-              selfie, see the piece on you, and decide with confidence. Pay with M-Pesa,
-              have it delivered before sunset.
+              Ordering is deliberately unhurried: you place the order, we
+              speak to you to arrange payment, and only then does it ship.
+              Slower than tapping a card, and nobody is left wondering.
             </p>
             <p>
               We're still small, still iterating, and still very much listening. If
@@ -99,7 +106,7 @@ const AboutUs = () => {
           <div>
             <p className="font-display text-3xl text-ink-1">Come say hi.</p>
             <p className="text-ink-muted mt-2 max-w-md">
-              We're at Westlands by appointment, and always in your inbox.
+              Online only for now &mdash; but always in your inbox.
             </p>
           </div>
           <div className="flex gap-3">

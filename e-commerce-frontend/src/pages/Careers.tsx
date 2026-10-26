@@ -9,40 +9,20 @@ interface Role {
   blurb: string;
 }
 
-const ROLES: Role[] = [
-  {
-    team: "Engineering",
-    title: "Senior Full-Stack Engineer",
-    location: "Nairobi · Hybrid",
-    type: "Full-time",
-    blurb:
-      "Lead the storefront stack (React + Django) and ship our visual-search and try-on features end-to-end.",
-  },
-  {
-    team: "Engineering",
-    title: "ML Engineer — Try-on",
-    location: "Remote (EAT ±3)",
-    type: "Full-time",
-    blurb:
-      "Own our hair try-on pipeline: HairCLIP, on-device face mesh, latency and cost optimisation.",
-  },
-  {
-    team: "Operations",
-    title: "Fulfilment Lead",
-    location: "Nairobi · On-site",
-    type: "Full-time",
-    blurb:
-      "Run our Westlands fulfilment, manage boda partners, and own same-day delivery SLAs.",
-  },
-  {
-    team: "Brand",
-    title: "Senior Content Stylist",
-    location: "Nairobi · Hybrid",
-    type: "Contract · 6 months",
-    blurb:
-      "Cast, style, and produce our quarterly Lookbook editorials. Strong portfolio in beauty and editorial.",
-  },
-];
+/*
+ * Open roles.
+ *
+ * Four were listed here, with locations, contract types and an Apply
+ * button: a senior full-stack engineer, an ML engineer for a hair try-on
+ * pipeline, a fulfilment lead for a Westlands warehouse, and a content
+ * stylist. None of them is a job Entito is hiring for.
+ *
+ * Invented vacancies are not harmless the way invented marketing copy is -
+ * people spend an afternoon on an application for them. So the list is
+ * empty and the page says so, the same way the Press page does. Add real
+ * roles here when there are real roles.
+ */
+const ROLES: Role[] = [];
 
 const Careers = () => {
   return (
@@ -72,6 +52,21 @@ const Careers = () => {
             {ROLES.length} {ROLES.length === 1 ? "position" : "positions"}
           </span>
         </div>
+        {ROLES.length === 0 && (
+          <div className="bg-surface border border-line-soft rounded-card-lg py-16 px-6 text-center">
+            <p className="font-display text-2xl text-ink-1">
+              Nothing open at the moment
+            </p>
+            <p className="text-ink-muted mt-3 max-w-md mx-auto text-sm">
+              We are not hiring right now. If you think you would be a good
+              fit for Entito anyway, we would still like to hear from you.
+            </p>
+            <Link to="/contact" className="btn-pill btn-primary mt-6 inline-flex">
+              Get in touch
+              <ArrowUpRight size={14} />
+            </Link>
+          </div>
+        )}
         <div className="space-y-3">
           {ROLES.map((role) => (
             <div

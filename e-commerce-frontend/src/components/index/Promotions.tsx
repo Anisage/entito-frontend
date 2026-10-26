@@ -1,4 +1,5 @@
 import { Scissors, Truck, RefreshCw, ShieldCheck } from 'lucide-react';
+import { RETURN_CONDITION, RETURN_WINDOW_DAYS } from '../../content/policy';
 
 /**
  * Four things a shopper should know before she buys. Each one has to be
@@ -23,8 +24,8 @@ const items = [
   },
   {
     icon: RefreshCw,
-    title: '7-day returns',
-    sub: 'Unworn, with tags attached',
+    title: `${RETURN_WINDOW_DAYS}-day returns`,
+    sub: RETURN_CONDITION,
   },
   {
     icon: ShieldCheck,

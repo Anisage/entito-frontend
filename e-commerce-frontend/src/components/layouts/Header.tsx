@@ -7,6 +7,7 @@ import { fetchCategories, selectedCategories } from '../../redux/slices/category
 import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { cartItemsCount } from '../../redux/slices/cartSlice';
+import { RETURN_WINDOW_DAYS } from '../../content/policy';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ const Header = () => {
               delivery over Ksh 5,000" line was a promise the shop would
               have had to break at checkout. */}
           <span className="hidden sm:block opacity-80">Delivery countrywide · priced by area</span>
-          <span className="opacity-80">7-day returns</span>
+          <span className="opacity-80">{RETURN_WINDOW_DAYS}-day returns</span>
         </div>
       </div>
 

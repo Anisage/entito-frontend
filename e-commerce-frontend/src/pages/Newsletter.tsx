@@ -42,8 +42,8 @@ const Newsletter = () => {
             Subtle inbox,<br /> strong taste.
           </h1>
           <p className="text-ink-muted mt-4 max-w-xl">
-            Edits, drops, and the occasional behind-the-scenes from our Westlands
-            studio. We email twice a month — that's it.
+            New pieces, and the occasional look behind how they are made.
+            We email twice a month &mdash; that&rsquo;s it.
           </p>
         </div>
       </section>

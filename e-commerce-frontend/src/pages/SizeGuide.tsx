@@ -2,13 +2,14 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Ruler, ArrowUpRight } from "lucide-react";
 
-type Tab = "tops" | "bottoms" | "wigs" | "eyewear";
+// Entito sells clothing. The "Wigs & weaves" and "Eyewear" tabs that
+// stood here, with cap circumferences and lens widths, belonged to the
+// business this codebase started as.
+type Tab = "tops" | "bottoms";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "tops", label: "Tops & dresses" },
-  { id: "bottoms", label: "Bottoms" },
-  { id: "wigs", label: "Wigs & weaves" },
-  { id: "eyewear", label: "Eyewear" },
+  { id: "bottoms", label: "Skirts & trousers" },
 ];
 
 const DATA: Record<Tab, { headers: string[]; rows: string[][] }> = {
@@ -30,22 +31,6 @@ const DATA: Record<Tab, { headers: string[]; rows: string[][] }> = {
       ["M", "70", "96", "78"],
       ["L", "76", "102", "80"],
       ["XL", "82", "108", "80"],
-    ],
-  },
-  wigs: {
-    headers: ["Cap", "Circumference (in)", "Front to nape (in)"],
-    rows: [
-      ["Petite", "21.0 – 21.5", "13.5"],
-      ["Average", "21.5 – 22.5", "14.0"],
-      ["Large", "22.5 – 23.5", "14.5"],
-    ],
-  },
-  eyewear: {
-    headers: ["Frame", "Lens width", "Bridge", "Temple"],
-    rows: [
-      ["Small", "48 mm", "18 mm", "140 mm"],
-      ["Medium", "51 mm", "19 mm", "145 mm"],
-      ["Large", "54 mm", "20 mm", "148 mm"],
     ],
   },
 };
@@ -72,7 +57,7 @@ const SizeGuide = () => {
             Measure once,<br /> wear it forever.
           </h1>
           <p className="text-ink-muted mt-4 max-w-xl">
-            Sizes are listed in centimetres for clothing and inches for wigs and frames —
+            Sizes are listed in centimetres —
             the way each industry actually measures. When in doubt, size up; our tailor
             in Westlands can take in seams for KSh 800 a piece.
           </p>
@@ -144,10 +129,6 @@ const SizeGuide = () => {
               <li>
                 <span className="text-ink-1 font-medium">Hip:</span> Around the
                 fullest part of your hips and seat.
-              </li>
-              <li>
-                <span className="text-ink-1 font-medium">Head:</span> Around the
-                hairline, just above the ears.
               </li>
             </ul>
           </div>

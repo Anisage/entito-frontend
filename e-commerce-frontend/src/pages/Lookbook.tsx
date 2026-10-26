@@ -6,49 +6,56 @@ interface Story {
   title: string;
   season: string;
   tagline: string;
-  image: string;
+  image: string | null;
   hue: string;
 }
 
+/*
+ * The seasonal edits.
+ *
+ * What stood here described "earth-toned weaves and braided crowns",
+ * "sapphire bobs" and "sleek lace fronts" - hair, from the business this
+ * codebase began as - over stock photographs of strangers pulled from
+ * Unsplash and presented as Entito campaigns. Each edit also linked to
+ * `?category-name=harvest` and the like, which match no category, so every
+ * one of them landed on an empty catalogue.
+ *
+ * These are clothing edits now, each pointing at a category that exists.
+ * `image` is deliberately null until Entito's own photography is shot:
+ * a marked placeholder is honest, somebody else's photo is not.
+ */
 const STORIES: Story[] = [
   {
-    id: "harvest",
-    title: "Harvest",
-    season: "FW 2026 · Edit 01",
+    id: "dresses",
+    title: "Day Into Evening",
+    season: "The dresses edit",
     tagline:
-      "Earth-toned weaves and braided crowns shot at golden hour in Karura.",
-    image:
-      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=1600&q=80",
+      "Pieces that hold their shape from a morning meeting to a late table.",
+    image: null,
     hue: "bg-[#d8a47f]",
   },
   {
-    id: "matatu-nights",
-    title: "Matatu Nights",
-    season: "FW 2026 · Edit 02",
-    tagline:
-      "After-dark colour: sapphire bobs, neon liner, and the city blurring behind.",
-    image:
-      "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1600&q=80",
+    id: "tops & blouses",
+    title: "Quiet Layers",
+    season: "The tops edit",
+    tagline: "Blouses and knits built to carry the rest of the wardrobe.",
+    image: null,
     hue: "bg-[#1d2440]",
   },
   {
-    id: "sunday-soft",
-    title: "Sunday Soft",
-    season: "SS 2026 · Edit 03",
-    tagline:
-      "Honey extensions and slip dresses, photographed on the way to brunch.",
-    image:
-      "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=1600&q=80",
+    id: "skirts & trousers",
+    title: "Room To Move",
+    season: "The tailoring edit",
+    tagline: "Wide legs, deep pleats, and waistbands that sit where they should.",
+    image: null,
     hue: "bg-[#f3d9b1]",
   },
   {
-    id: "studio-blue",
-    title: "Studio Blue",
-    season: "SS 2026 · Edit 04",
-    tagline:
-      "Sleek lace fronts paired with linen tailoring — a quiet, deliberate palette.",
-    image:
-      "https://images.unsplash.com/photo-1488508872907-592763824245?w=1600&q=80",
+    id: "outerwear",
+    title: "The Outer Layer",
+    season: "The coats edit",
+    tagline: "What goes over everything, cut to be worn open or closed.",
+    image: null,
     hue: "bg-[#2a3a55]",
   },
 ];
@@ -88,18 +95,19 @@ const Lookbook = () => {
       {/* Hero story */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <Link
-          to={`/products?category-name=${STORIES[0].id}`}
+          to={`/products?category-name=${encodeURIComponent(STORIES[0].id)}`}
           className="group relative block overflow-hidden rounded-card-lg"
         >
           <div className={`absolute inset-0 ${STORIES[0].hue} opacity-90`} />
-          <img
-            src={STORIES[0].image}
-            alt={STORIES[0].title}
-            className="relative w-full h-[480px] md:h-[640px] object-cover mix-blend-overlay group-hover:scale-[1.02] transition-transform duration-700"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).style.display = "none";
-            }}
-          />
+          {STORIES[0].image ? (
+            <img
+              src={STORIES[0].image}
+              alt={STORIES[0].title}
+              className="relative w-full h-[480px] md:h-[640px] object-cover mix-blend-overlay group-hover:scale-[1.02] transition-transform duration-700"
+            />
+          ) : (
+            <div className="relative w-full h-[480px] md:h-[640px]" />
+          )}
           <div className="absolute inset-0 bg-gradient-to-t from-ink-1/80 via-ink-1/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 text-white">
             <p className="text-xs uppercase tracking-wider text-white/70 mb-3">
@@ -126,18 +134,19 @@ const Lookbook = () => {
           {STORIES.slice(1).map((story) => (
             <Link
               key={story.id}
-              to={`/products?category-name=${story.id}`}
+              to={`/products?category-name=${encodeURIComponent(story.id)}`}
               className="group relative block overflow-hidden rounded-card-lg"
             >
               <div className={`absolute inset-0 ${story.hue} opacity-90`} />
-              <img
-                src={story.image}
-                alt={story.title}
-                className="relative w-full h-[420px] object-cover mix-blend-overlay group-hover:scale-[1.03] transition-transform duration-700"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).style.display = "none";
-                }}
-              />
+              {story.image ? (
+                <img
+                  src={story.image}
+                  alt={story.title}
+                  className="relative w-full h-[420px] object-cover mix-blend-overlay group-hover:scale-[1.03] transition-transform duration-700"
+                />
+              ) : (
+                <div className="relative w-full h-[420px]" />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-ink-1/85 via-ink-1/10 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <p className="text-[11px] uppercase tracking-wider text-white/70">

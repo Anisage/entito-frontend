@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import FAQItem from './FAQItem';
+import { RETURN_CONDITION, RETURN_WINDOW_DAYS } from '../../content/policy';
 
 const FAQS = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -25,8 +26,7 @@ const FAQS = () => {
     },
     {
       question: "What's your return policy?",
-      answer:
-        'Seven days from delivery, for pieces that are unworn and still have their tags attached.',
+      answer: `${RETURN_WINDOW_DAYS} days from delivery, for pieces that are ${RETURN_CONDITION}.`,
     },
     {
       question: 'What sizes do you carry?',

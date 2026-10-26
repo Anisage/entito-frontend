@@ -42,14 +42,12 @@ const Contact = () => {
               <MessageCircle size={16} className="text-ink-1 mb-3" />
               <p className="font-display text-xl text-ink-1">WhatsApp</p>
               <p className="text-sm text-ink-muted mt-1">Fastest reply, 08:00 – 20:00 EAT.</p>
-              <a
-                href="https://wa.me/254700000000"
-                target="_blank"
-                rel="noreferrer noopener"
-                className="text-ink-1 text-sm font-medium mt-3 inline-block"
-              >
-                +254 700 000 000
-              </a>
+              {/* +254 700 000 000 is a placeholder, not Entito's number -
+                  the WhatsApp link went to a number nobody owns. Put the
+                  real one here and restore the wa.me link with it. */}
+              <p className="text-ink-1 text-sm font-medium mt-3">
+                [WhatsApp number]
+              </p>
             </div>
             <div className="bg-surface border border-line-soft rounded-card-lg p-6">
               <Mail size={16} className="text-ink-1 mb-3" />
@@ -60,13 +58,17 @@ const Contact = () => {
             <div className="bg-surface border border-line-soft rounded-card-lg p-6">
               <Phone size={16} className="text-ink-1 mb-3" />
               <p className="font-display text-xl text-ink-1">Phone</p>
-              <p className="text-sm text-ink-muted mt-1">+254 700 000 001 · Mon – Sat, 09:00 – 18:00</p>
+              <p className="text-sm text-ink-muted mt-1">[Phone number] · Mon – Sat, 09:00 – 18:00</p>
             </div>
             <div className="bg-surface border border-line-soft rounded-card-lg p-6">
               <MapPin size={16} className="text-ink-1 mb-3" />
-              <p className="font-display text-xl text-ink-1">Visit</p>
+              {/* There is no shop to visit. The Westlands suite listed
+                  here was invented - the same address that was on the
+                  Privacy page under another company's name - and someone
+                  would have travelled to it. */}
+              <p className="font-display text-xl text-ink-1">Where we are</p>
               <p className="text-sm text-ink-muted mt-1">
-                The Mall, Westlands · 2nd floor, Suite 214 · By appointment.
+                Online only for now, delivering across Kenya.
               </p>
             </div>
           </aside>
@@ -140,7 +142,7 @@ const Contact = () => {
                     >
                       <option>Order help</option>
                       <option>Returns &amp; refunds</option>
-                      <option>Try-on / sizing</option>
+                      <option>Sizing</option>
                       <option>Press</option>
                       <option>Careers</option>
                       <option>Something else</option>

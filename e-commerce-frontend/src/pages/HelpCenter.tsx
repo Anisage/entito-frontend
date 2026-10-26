@@ -1,38 +1,37 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ChevronDown, MessageCircle, Truck, RotateCcw, CreditCard, Sparkles, ArrowUpRight } from "lucide-react";
+import { Search, ChevronDown, MessageCircle, Truck, RotateCcw, CreditCard, Ruler, ArrowUpRight } from "lucide-react";
+import { RETURN_CONDITION, RETURN_WINDOW_DAYS } from '../content/policy';
 
 const TOPICS = [
-  { icon: Truck, title: "Delivery", to: "/delivery", body: "Same-day boda in Nairobi, EMS countrywide." },
-  { icon: RotateCcw, title: "Returns", to: "/returns", body: "Free returns within 14 days on most items." },
-  { icon: CreditCard, title: "Payments", to: "/checkout", body: "M-Pesa, card, and cash on delivery." },
-  { icon: Sparkles, title: "Try-on", to: "/visual-search", body: "How our AI fitting works." },
+  { icon: Truck, title: "Delivery", to: "/delivery", body: "Countrywide, priced by the area you are in." },
+  { icon: RotateCcw, title: "Returns", to: "/returns", body: `${RETURN_WINDOW_DAYS} days from delivery, ${RETURN_CONDITION}.` },
+  { icon: CreditCard, title: "Payments", to: "/checkout", body: "Arranged with you after you place the order." },
+  // "Try-on" pointed at visual search, which is switched off - the card
+  // led to a "coming soon" page. Sizing is what shoppers actually need.
+  { icon: Ruler, title: "Sizing", to: "/size-guide", body: "Measurements for every size we cut." },
 ];
 
 const FAQS = [
   {
-    q: "How long does delivery take in Nairobi?",
-    a: "Orders placed before 14:00 are delivered the same day via our boda partners. After 14:00, expect next-day delivery before noon. We confirm a window over WhatsApp once your rider is dispatched.",
+    q: "How do I pay for my order?",
+    a: "Online payment isn't switched on yet. Place your order and we'll contact you to arrange payment — once it's settled we pack the order and confirm delivery. Nothing ships before then.",
   },
   {
-    q: "Can I really try a wig on before buying?",
-    a: "Yes — open any product page and tap 'Try on'. Upload a clear, well-lit photo of yourself and our AI renders the piece on you. It's the same model that runs in our studios, just on your phone.",
-  },
-  {
-    q: "Is M-Pesa available at checkout?",
-    a: "M-Pesa STK push is the default for Kenyan customers. You'll receive a prompt on your phone — approve it and we pack your order. Card and cash-on-delivery are also supported.",
-  },
-  {
-    q: "What if a wig doesn't suit me when it arrives?",
-    a: "We accept returns within 14 days as long as the lace is uncut and the piece hasn't been worn. Read the full policy on the Returns page.",
+    q: "How much is delivery, and how long does it take?",
+    a: "The fee depends on your area, and you see it at checkout before you place the order. Standard delivery is 3 to 5 working days, express 1 to 2. Same-day is available within Nairobi for orders placed before noon.",
   },
   {
     q: "Do you ship outside Kenya?",
-    a: "Right now we ship across Kenya only. We're working on East Africa coverage (Uganda, Tanzania, Rwanda) for late 2026 — sign up to our newsletter to hear when it lands.",
+    a: "Not at the moment — we deliver across Kenya only.",
+  },
+  {
+    q: `What if a piece doesn't fit?`,
+    a: `You have ${RETURN_WINDOW_DAYS} days from delivery to send it back, as long as it is ${RETURN_CONDITION}. Read the full policy on the Returns page.`,
   },
   {
     q: "How do I track my order?",
-    a: "You'll get a tracking link by SMS as soon as your order leaves our Westlands fulfilment centre. For boda deliveries we share the rider's number so you can coordinate directly.",
+    a: "Your order appears under your account as soon as it's placed, and we'll be in touch directly with delivery details once payment is arranged.",
   },
 ];
 

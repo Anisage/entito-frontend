@@ -4,6 +4,7 @@ import Slider from '@mui/material/Slider';
 import { useSelector } from 'react-redux';
 import { selectedCategories } from '../../redux/slices/categorySlice';
 import { money } from '../../utils/money';
+import { RETURN_WINDOW_DAYS } from '../../content/policy';
 
 interface ProductFilterProps {
   minPrice?: number;
@@ -210,11 +211,11 @@ const ProductsFilter: React.FC<ProductFilterProps> = ({
       <div className="pt-4 text-[11px] text-ink-muted leading-relaxed space-y-1.5">
         <p className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 bg-ink-1 rounded-full" />
-          Free delivery over Ksh 5,000
+          Delivery priced by area
         </p>
         <p className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 bg-coral rounded-full" />
-          7-day returns, hassle-free
+          {RETURN_WINDOW_DAYS}-day returns
         </p>
       </div>
     </aside>

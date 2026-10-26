@@ -10,40 +10,20 @@ interface Store {
   status: "open" | "soon";
 }
 
-const STORES: Store[] = [
-  {
-    city: "Nairobi",
-    name: "Westlands Studio",
-    address: "The Mall, Westlands · 2nd floor, Suite 214",
-    hours: "Mon – Sat · 10:00 – 19:00",
-    phone: "+254 700 000 000",
-    status: "open",
-  },
-  {
-    city: "Nairobi",
-    name: "Karen Showroom",
-    address: "Karen Crossroads · Ground floor",
-    hours: "Wed – Sun · 11:00 – 18:00",
-    phone: "+254 700 000 001",
-    status: "open",
-  },
-  {
-    city: "Mombasa",
-    name: "Nyali Pop-up",
-    address: "City Mall, Nyali · Coming Q3 2026",
-    hours: "—",
-    phone: "—",
-    status: "soon",
-  },
-  {
-    city: "Kisumu",
-    name: "Lakeside Atelier",
-    address: "Mega Plaza, Kisumu · Coming Q4 2026",
-    hours: "—",
-    phone: "—",
-    status: "soon",
-  },
-];
+/*
+ * Entito's shops.
+ *
+ * Four were listed here with street addresses, opening hours and phone
+ * numbers: a Westlands studio at "The Mall, 2nd floor, Suite 214", a Karen
+ * showroom, and pop-ups in Nyali and Kisumu. None of them exists. The
+ * Westlands address is the same invented one that was on the Privacy page
+ * under another company's name.
+ *
+ * This is the worst kind of placeholder to leave in: somebody reads it,
+ * drives across Nairobi on a Saturday, and finds an office suite. Empty
+ * until Entito has a real address to put here.
+ */
+const STORES: Store[] = [];
 
 const Stores = () => {
   return (
@@ -67,6 +47,20 @@ const Stores = () => {
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          {STORES.length === 0 && (
+            <div className="col-span-full bg-surface border border-line-soft rounded-card-lg py-16 px-6 text-center">
+              <p className="font-display text-2xl text-ink-1">
+                We are online only, for now
+              </p>
+              <p className="text-ink-muted mt-3 max-w-md mx-auto text-sm">
+                Entito does not have a shop you can walk into yet. Everything
+                is ordered here and delivered to you, anywhere in Kenya.
+              </p>
+              <Link to="/products" className="btn-pill btn-primary mt-6 inline-flex">
+                Shop the collection
+              </Link>
+            </div>
+          )}
           {STORES.map((store) => (
             <div
               key={store.name}

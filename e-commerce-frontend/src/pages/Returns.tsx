@@ -1,30 +1,33 @@
 import { Link } from "react-router-dom";
 import { RotateCcw, CheckCircle2, XCircle, ArrowUpRight } from "lucide-react";
+import { RETURN_CONDITION, RETURN_WINDOW_DAYS } from '../content/policy';
 
 const STEPS = [
   {
     n: "01",
-    title: "Start the return",
+    title: "Get in touch",
+    // There is no "Start return" button in the account area - returns are
+    // arranged by hand, the same way payment is.
     body:
-      "Open your order in your account and tap 'Start return'. Choose a reason — it helps us improve.",
+      "Contact us with your order number and tell us what went wrong. We will take it from there.",
   },
   {
     n: "02",
-    title: "Print the label",
+    title: "Pack it up",
     body:
-      "We email a prepaid label. Stick it on the original mailer, or any sturdy bag if you've recycled ours.",
+      "The original mailer is ideal, or any sturdy bag if you have recycled ours. Keep the tags on.",
   },
   {
     n: "03",
-    title: "Drop it off",
+    title: "Send it back",
     body:
-      "Hand it to your boda rider, drop at the nearest G4S point, or book a free pickup in Nairobi.",
+      "We will confirm where to send it and who covers the postage when you get in touch.",
   },
   {
     n: "04",
     title: "We refund",
     body:
-      "Once we receive and inspect (usually within 48 hours), we refund to your M-Pesa or card.",
+      "Once it reaches us and we have checked it over, we arrange your refund the same way you paid.",
   },
 ];
 
@@ -41,14 +44,15 @@ const Returns = () => {
             <span className="text-ink-1">Returns</span>
           </nav>
           <span className="chip mb-4">
-            <RotateCcw size={12} /> 14-day return window
+            <RotateCcw size={12} /> {RETURN_WINDOW_DAYS}-day return window
           </span>
           <h1 className="font-display text-5xl md:text-6xl text-ink-1 leading-tight mt-3">
             Didn't quite work?<br /> Send it back.
           </h1>
           <p className="text-ink-muted mt-4 max-w-xl">
-            We get it — even with try-on, sometimes the colour reads differently in
-            daylight. You have 14 days from delivery to return most items, free.
+            Sometimes the colour reads differently in daylight, or the fit
+            just isn&rsquo;t right. You have {RETURN_WINDOW_DAYS} days from
+            delivery to send most pieces back.
           </p>
         </div>
       </section>
@@ -75,11 +79,12 @@ const Returns = () => {
           <div className="bg-surface border border-line-soft rounded-card-lg p-6 md:p-8">
             <CheckCircle2 size={18} className="text-mint-deep mb-3" />
             <p className="font-display text-2xl text-ink-1">What you can return</p>
+            {/* Wigs, weaves, beauty products and eyewear were listed here.
+                Entito sells its own ladies' clothing and nothing else. */}
             <ul className="mt-4 space-y-2 text-sm text-ink-muted">
-              <li>· Wigs and weaves with lace uncut and tags attached</li>
-              <li>· Unworn ready-to-wear and accessories</li>
-              <li>· Sealed beauty products</li>
-              <li>· Eyewear in original case with no scratches</li>
+              <li>· Pieces that are {RETURN_CONDITION}</li>
+              <li>· Anything that arrived damaged or not as described</li>
+              <li>· The wrong size, where we have another to exchange it for</li>
             </ul>
           </div>
           <div className="bg-surface border border-line-soft rounded-card-lg p-6 md:p-8">
@@ -87,8 +92,8 @@ const Returns = () => {
             <p className="font-display text-2xl text-ink-1">What we can't take back</p>
             <ul className="mt-4 space-y-2 text-sm text-ink-muted">
               <li>· Custom or made-to-order pieces</li>
-              <li>· Wigs with cut lace or visible wear</li>
-              <li>· Opened beauty products (hygiene)</li>
+              <li>· Anything worn, washed or altered</li>
+              <li>· Pieces returned without their tags</li>
               <li>· Final-sale items (clearly marked at checkout)</li>
             </ul>
           </div>
